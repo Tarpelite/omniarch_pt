@@ -18,16 +18,13 @@ IN_DIST = [
     ("cfd2d_rand_m1.0_eta0.01", "2d_compressible_ns", "二维可压缩 NS 方程，M=1"),
     ("cfd2d_turb_m1.0", "2d_turbulence", "二维可压缩湍流，M=1"),
     ("cfd3d_rand", "3d_compressible_ns", "三维可压缩 NS 方程，随机初值"),
-    ("cfd3d_turb", "3d_turbulence", "三维可压缩湍流，M=1"),
 ]
 IN_NOTE = "训练分布内的测试样本，这条轨迹训练时没见过。"
 
 # (raw file, case id, title, time stride, space stride)
 ZERO_SHOT = [
     ("1D/CFD/Test/ShockTube/Sod7.hdf5", "1d_sod_shock_tube", "一维 Sod 激波管", 10, 4),
-    ("2D/CFD/Test/KH/KH_M01_dk1_Re1e3.hdf5", "2d_kelvin_helmholtz", "二维 Kelvin–Helmholtz 不稳定性", 2, 16),
     ("2D/CFD/Test/TOV/OTVortex.hdf5", "2d_orszag_tang_vortex", "二维 Orszag–Tang 涡", 5, 16),
-    ("3D/Test/Turbulence/Turb_M1.hdf5", "3d_turbulence_highres", "三维湍流，256³ 降到 32³", 2, 8),
 ]
 ZS_NOTE = "零样本：训练中没有出现过的问题，网格和时间步长也和训练不同。"
 
