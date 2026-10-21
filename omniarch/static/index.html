@@ -1,0 +1,295 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OmniArch 智算天璇</title>
+<style>
+:root{
+  --bg:#0a0f1d; --panel:#111829; --panel2:#151e33; --line:#24304b; --ink:#e8ecf5; --mute:#8d99b3;
+  --gold:#f2c14e; --gold2:#ffdf8a; --blue:#6fb6e6; --red:#e4572e; --given:#3a4a6e;
+  --serif:"Songti SC","STSong","Noto Serif CJK SC","Source Han Serif SC","SimSun",serif;
+  --sans:"PingFang SC","Microsoft YaHei","Noto Sans CJK SC","Source Han Sans SC",system-ui,sans-serif;
+  --mono:"JetBrains Mono","SFMono-Regular",Consolas,"Liberation Mono",monospace;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.55 var(--sans)}
+body{min-height:100vh;background:
+  radial-gradient(1200px 600px at 85% -10%,rgba(242,193,78,.08),transparent 60%),
+  radial-gradient(900px 500px at -10% 110%,rgba(111,182,230,.07),transparent 60%),var(--bg)}
+header{display:flex;align-items:center;gap:16px;padding:14px 24px;border-bottom:1px solid var(--line)}
+.brand{display:flex;align-items:baseline;gap:12px}
+.brand b{font:600 22px/1 var(--sans);letter-spacing:.5px}
+.brand span{font:600 20px/1 var(--serif);color:var(--gold);letter-spacing:4px}
+.brand i{font-style:normal;color:var(--mute);font-size:12.5px;border:1px solid var(--line);border-radius:10px;padding:1px 8px}
+.chip{margin-left:auto;display:flex;gap:18px;color:var(--mute);font-size:12.5px}
+.chip em{font-style:normal;color:var(--ink);font-family:var(--mono)}
+main{display:grid;grid-template-columns:300px 1fr;min-height:calc(100vh - 58px)}
+aside{border-right:1px solid var(--line);padding:16px;overflow:auto;max-height:calc(100vh - 58px)}
+aside h3{margin:18px 4px 8px;font:600 12.5px/1 var(--sans);color:var(--mute);letter-spacing:2px}
+aside h3:first-child{margin-top:4px}
+.case{display:flex;gap:10px;align-items:center;padding:8px;border-radius:10px;cursor:pointer;border:1px solid transparent}
+.case:hover{background:var(--panel)}
+.case.on{background:var(--panel2);border-color:#3a4a72}
+.case canvas{width:52px;height:52px;border-radius:6px;flex:none;background:#000}
+.case .t{font-size:13.5px;line-height:1.35}
+.case .n{font-size:12.5px;color:var(--mute)}
+.tag{display:inline-block;font-size:12.5px;line-height:1;padding:3px 6px;border-radius:6px;margin-top:4px}
+.tag.in{background:rgba(111,182,230,.12);color:var(--blue)}
+.tag.ood{background:rgba(242,193,78,.13);color:var(--gold)}
+.upload{margin-top:18px;display:block;text-align:center;padding:10px;border:1px dashed #3a4a72;border-radius:10px;color:var(--mute);cursor:pointer}
+.upload:hover{color:var(--ink);border-color:var(--gold)}
+section.stage{padding:20px 28px;overflow:auto;max-height:calc(100vh - 58px)}
+.title h1{margin:0;font:600 24px/1.3 var(--sans)}
+.title p{margin:4px 0 0;color:var(--mute)}
+.controls{display:flex;flex-wrap:wrap;gap:22px;align-items:center;margin:18px 0 12px;padding:14px 16px;background:var(--panel);border:1px solid var(--line);border-radius:12px}
+.ctl{display:flex;flex-direction:column;gap:4px;min-width:180px}
+.ctl label{font-size:12.5px;color:var(--mute)}
+.ctl label em{font-style:normal;color:var(--ink);font-family:var(--mono);margin-left:6px}
+input[type=range]{accent-color:var(--gold);width:200px}
+button.run{margin-left:auto;background:var(--gold);color:#1a1405;border:0;border-radius:10px;padding:10px 22px;font:600 15px var(--sans);cursor:pointer}
+button.run:hover{background:var(--gold2)}
+button.run:disabled{opacity:.5;cursor:wait}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0 12px}
+.tabs button{background:transparent;color:var(--mute);border:1px solid var(--line);border-radius:8px;padding:5px 12px;cursor:pointer;font:13px var(--sans)}
+.tabs button.on{color:#1a1405;background:var(--ink);border-color:var(--ink)}
+.tabs .sep{width:14px}
+.panels{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.pane{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:10px}
+.pane .h{display:flex;justify-content:space-between;font-size:12.5px;color:var(--mute);margin-bottom:6px}
+.pane .h b{color:var(--ink);font-weight:600}
+.pane canvas{width:100%;aspect-ratio:1;border-radius:6px;display:block;background:#000}
+.pane.wide canvas{aspect-ratio:auto;height:240px}
+.cbar{display:flex;align-items:center;gap:6px;font:12.5px var(--mono);color:var(--mute);margin-top:6px}
+.pane .cbar canvas{height:8px;width:0;min-width:0;aspect-ratio:auto;flex:1 1 0;border-radius:4px}
+.cbar span{flex:none}
+.timeline{display:flex;align-items:center;gap:12px;margin:14px 0}
+.timeline button{width:38px;height:38px;border-radius:50%;border:1px solid var(--line);background:var(--panel);color:var(--ink);cursor:pointer;font-size:14px}
+.track{position:relative;flex:1;height:38px}
+.track .bar{position:absolute;top:16px;height:6px;border-radius:3px}
+.track input{position:absolute;inset:0;width:100%;opacity:0;cursor:pointer}
+.track .knob{position:absolute;top:9px;width:4px;height:20px;background:var(--ink);border-radius:2px;pointer-events:none}
+.tlabel{font:13px var(--mono);min-width:170px;text-align:right}
+.tlabel b{color:var(--gold);font-weight:500}
+.bottom{display:grid;grid-template-columns:320px 1fr;gap:14px;margin-top:6px}
+.stat{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px}
+.stat .big{font:600 34px/1.1 var(--mono);color:var(--gold)}
+.stat .row{display:flex;justify-content:space-between;margin-top:10px;color:var(--mute);font-size:13px}
+.stat .row em{font-style:normal;color:var(--ink);font-family:var(--mono)}
+.stat .cap{color:var(--mute);font-size:12.5px;margin-top:10px;line-height:1.6}
+svg text{font:12.5px var(--sans);fill:var(--mute)}
+.empty{color:var(--mute);padding:60px 0;text-align:center}
+.err{color:var(--red);margin:8px 0}
+@media (max-width:1000px){main{grid-template-columns:1fr}aside{max-height:none;border-right:0;border-bottom:1px solid var(--line)}
+  .panels{grid-template-columns:1fr}.bottom{grid-template-columns:1fr}section.stage{max-height:none;padding:16px}}
+</style>
+</head>
+<body>
+<header>
+  <svg width="34" height="26" viewBox="0 0 34 26" aria-hidden="true">
+    <polyline points="2,20 8,23 13,19 18,15 24,11 29,4 33,9" fill="none" stroke="#3a4a72" stroke-width="1"/>
+    <g fill="#8d99b3"><circle cx="2" cy="20" r="1.6"/><circle cx="13" cy="19" r="1.6"/><circle cx="18" cy="15" r="1.6"/>
+    <circle cx="24" cy="11" r="1.6"/><circle cx="29" cy="4" r="1.6"/><circle cx="33" cy="9" r="1.6"/></g>
+    <circle cx="8" cy="23" r="2.6" fill="#f2c14e"/>
+  </svg>
+  <div class="brand"><b>OmniArch</b><span>智算天璇</span><i id="size">mini</i></div>
+  <div class="chip" id="chip"></div>
+</header>
+<main>
+  <aside id="cases"></aside>
+  <section class="stage" id="stage"><div class="empty">正在加载模型和算例</div></section>
+</main>
+<script>
+const CN = {u:"标量 u", v:"标量 v", h:"水深 h", density:"密度 ρ", Vx:"速度 Vx", Vy:"速度 Vy", Vz:"速度 Vz", pressure:"压力 p"};
+const DIMCN = {1:"一维", 2:"二维", 3:"三维"};
+const $ = s => document.querySelector(s);
+const st = {cases:[], cur:null, res:null, ch:0, plane:0, t:0, timer:null};
+
+function dec(o){ const b = atob(o.data), u = new Uint8Array(b.length);
+  for(let i=0;i<b.length;i++) u[i]=b.charCodeAt(i);
+  return {shape:o.shape, a:new Float32Array(u.buffer)}; }
+
+// colour maps: diverging for fields, warm sequential for error
+const DIV = [[8,29,88],[37,92,168],[111,182,230],[236,236,232],[242,166,90],[200,68,43],[90,12,20]];
+const SEQ = [[10,15,29],[59,31,92],[150,52,110],[228,87,46],[242,193,78],[255,240,190]];
+function cmap(stops,x){ x=Math.min(1,Math.max(0,x)); const f=x*(stops.length-1), i=Math.min(stops.length-2,Math.floor(f)), r=f-i;
+  const a=stops[i], b=stops[i+1]; return [a[0]+(b[0]-a[0])*r, a[1]+(b[1]-a[1])*r, a[2]+(b[2]-a[2])*r]; }
+
+function drawField(cv, arr, off, H, W, lo, hi, stops){
+  const src=document.createElement("canvas"); src.width=W; src.height=H;
+  const g=src.getContext("2d"), im=g.createImageData(W,H);
+  for(let i=0;i<H;i++) for(let j=0;j<W;j++){
+    const v=arr[off+i*W+j], c=cmap(stops,(v-lo)/(hi-lo||1)), p=((H-1-i)*W+j)*4;
+    im.data[p]=c[0]; im.data[p+1]=c[1]; im.data[p+2]=c[2]; im.data[p+3]=255; }
+  g.putImageData(im,0,0);
+  const r=cv.getBoundingClientRect(), dpr=devicePixelRatio||1;
+  cv.width=Math.round(r.width*dpr); cv.height=Math.round(r.height*dpr);
+  const ctx=cv.getContext("2d"); ctx.imageSmoothingEnabled=true; ctx.imageSmoothingQuality="high";
+  ctx.drawImage(src,0,0,cv.width,cv.height); return ctx; }
+
+function drawBar(cv, stops){ const W=200; cv.width=W; cv.height=1; const g=cv.getContext("2d"), im=g.createImageData(W,1);
+  for(let j=0;j<W;j++){ const c=cmap(stops,j/(W-1)); im.data[j*4]=c[0]; im.data[j*4+1]=c[1]; im.data[j*4+2]=c[2]; im.data[j*4+3]=255; }
+  g.putImageData(im,0,0); }
+
+const fmt = v => Math.abs(v)>=1000||(Math.abs(v)<0.01&&v!==0) ? v.toExponential(1) : v.toFixed(Math.abs(v)<1?3:2);
+
+async function boot(){
+  const [info, cases] = await Promise.all([fetch("api/info").then(r=>r.json()), fetch("api/cases").then(r=>r.json())]);
+  const sz = (info.ckpt.match(/(tiny|mini|base|large)/) || [])[1]; if (sz) $("#size").textContent = sz;
+  $("#chip").innerHTML = `<span>参数 <em>${(info.params/1e6).toFixed(1)}M</em></span><span>设备 <em>${info.device}</em></span><span>权重 <em>${info.ckpt}</em></span>`;
+  st.cases = cases; renderList();
+  if(cases.length) pick(cases[0].id);
+}
+
+function renderList(){
+  const box=$("#cases"); box.innerHTML="";
+  for(const d of [1,2,3]){
+    const cs=st.cases.filter(c=>c.dim===d); if(!cs.length) continue;
+    box.insertAdjacentHTML("beforeend",`<h3>${DIMCN[d]}</h3>`);
+    for(const c of cs){
+      const el=document.createElement("div"); el.className="case"; el.dataset.id=c.id;
+      const ood = (c.note||"").includes("零样本");
+      el.innerHTML=`<canvas></canvas><div><div class="t">${c.title}</div>
+        <div class="n">${c.grid.join("×")}，${c.channels.length} 个物理量</div>
+        <span class="tag ${ood?"ood":"in"}">${ood?"零样本外推":"训练分布内"}</span></div>`;
+      el.onclick=()=>pick(c.id); box.appendChild(el);
+      requestAnimationFrame(()=>thumb(el.querySelector("canvas"), c.thumb, c.dim));
+    }
+  }
+  box.insertAdjacentHTML("beforeend",`<label class="upload">上传自己的算例 .npz<input type="file" accept=".npz" hidden></label>`);
+  box.querySelector("input").onchange=upload;
+}
+
+function thumb(cv,o,dim){ const t=dec(o); let lo=Infinity,hi=-Infinity; for(const v of t.a){lo=Math.min(lo,v);hi=Math.max(hi,v);}
+  if(dim===1){ const r=cv.getBoundingClientRect(),dpr=devicePixelRatio||1; cv.width=r.width*dpr; cv.height=r.height*dpr;
+    const g=cv.getContext("2d"); g.fillStyle="#0d1426"; g.fillRect(0,0,cv.width,cv.height); g.strokeStyle="#f2c14e"; g.lineWidth=1.5*dpr; g.beginPath();
+    t.a.forEach((v,i)=>{const x=i/(t.a.length-1)*cv.width, y=cv.height*(0.85-0.7*(v-lo)/(hi-lo||1)); i?g.lineTo(x,y):g.moveTo(x,y);}); g.stroke(); }
+  else drawField(cv,t.a,0,t.shape[0],t.shape[1],lo,hi,DIV); }
+
+async function upload(e){ const f=e.target.files[0]; if(!f) return; const fd=new FormData(); fd.append("file",f);
+  const r=await fetch("api/upload",{method:"POST",body:fd}); const j=await r.json();
+  if(!r.ok){ alert(j.detail); return; }
+  st.cases.push({id:j.id,title:f.name,note:"上传的算例",dim:0,grid:[],frames:0,channels:[],history:10}); pick(j.id); }
+
+function pick(id){
+  st.cur = st.cases.find(c=>c.id===id); st.res=null; st.ch=0; st.plane=0; stop();
+  document.querySelectorAll(".case").forEach(e=>e.classList.toggle("on",e.dataset.id===id));
+  const c=st.cur, T=c.frames||21, k=Math.min(c.history,T-1);
+  $("#stage").innerHTML = `
+    <div class="title"><h1>${c.title}</h1><p>${c.note||""}${c.frames?`　${c.grid.join("×")} 网格，${c.channels.length} 个物理量，共 ${c.frames} 帧`:""}</p></div>
+    <div class="controls">
+      <div class="ctl"><label>给模型看的前几帧<em id="kv">${k}</em></label><input id="k" type="range" min="1" max="${T-1}" value="${k}"></div>
+      <div class="ctl"><label>往后预测的步数<em id="sv">${T-k}</em></label><input id="s" type="range" min="1" max="${Math.max(T-1,40)}" value="${T-k}"></div>
+      <button class="run" id="run">运行预测</button>
+    </div>
+    <div id="out"><div class="empty">点"运行预测"，模型只看前几帧，自己往后推演</div></div>`;
+  $("#k").oninput=e=>{ $("#kv").textContent=e.target.value; const s=$("#s"); if(c.frames){ s.value=Math.max(1,T-e.target.value); $("#sv").textContent=s.value; } };
+  $("#s").oninput=e=>$("#sv").textContent=e.target.value;
+  $("#run").onclick=run;
+  run();
+}
+
+async function run(){
+  const b=$("#run"); b.disabled=true; b.textContent="推演中…";
+  try{
+    const r=await fetch("api/predict",{method:"POST",headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({case:st.cur.id,history:+$("#k").value,steps:+$("#s").value})});
+    const j=await r.json(); if(!r.ok) throw new Error(j.detail||r.statusText);
+    j.truth=j.truth.map(dec); j.pred=j.pred.map(dec); st.res=j; st.t=j.history; layout(); draw(); play();
+  }catch(e){ $("#out").innerHTML=`<div class="err">出错了：${e.message}</div>`; }
+  b.disabled=false; b.textContent="运行预测";
+}
+
+function layout(){
+  const j=st.res, d=j.dim;
+  const chTabs=j.channels.map((c,i)=>`<button data-c="${i}" class="${i===st.ch?"on":""}">${CN[c]||c}</button>`).join("");
+  const plTabs=d===3?`<span class="sep"></span>`+["x 中截面","y 中截面","z 中截面"].map((p,i)=>`<button data-p="${i}" class="${i===st.plane?"on":""}">${p}</button>`).join(""):"";
+  const panes = d===1 ? `
+      <div class="pane wide" style="grid-column:1/-1"><div class="h"><b>剖面</b><span>白线为真值，金色虚线为 OmniArch</span></div><canvas id="c0"></canvas></div>
+      <div class="pane"><div class="h"><b>真值</b><span>横轴空间，纵轴时间</span></div><canvas id="c1"></canvas><div class="cbar"><span id="lo1"></span><canvas id="b1"></canvas><span id="hi1"></span></div></div>
+      <div class="pane"><div class="h"><b>OmniArch 预测</b><span>虚线以上为预测</span></div><canvas id="c2"></canvas><div class="cbar"><span id="lo2"></span><canvas id="b2"></canvas><span id="hi2"></span></div></div>
+      <div class="pane"><div class="h"><b>误差</b><span>|预测 − 真值|</span></div><canvas id="c3"></canvas><div class="cbar"><span>0</span><canvas id="b3"></canvas><span id="hi3"></span></div></div>`
+    : ["真值","OmniArch 预测","误差"].map((n,i)=>`<div class="pane"><div class="h"><b>${n}</b><span>${i===2?"|预测 − 真值|":""}</span></div>
+        <canvas id="c${i+1}"></canvas><div class="cbar"><span id="lo${i+1}">${i===2?"0":""}</span><canvas id="b${i+1}"></canvas><span id="hi${i+1}"></span></div></div>`).join("");
+  $("#out").innerHTML = `
+    <div class="tabs">${chTabs}${plTabs}</div>
+    <div class="panels">${panes}</div>
+    <div class="timeline"><button id="pp">❚❚</button>
+      <div class="track" id="track"></div><div class="tlabel" id="tl"></div></div>
+    <div class="bottom">
+      <div class="stat">${j.nrmse!=null?`<div style="color:var(--mute);font-size:12.5px">预测段相对误差 nRMSE，越低越好</div>
+        <div class="big">${j.nrmse.toFixed(4)}</div>
+        <div class="row"><span>对照：直接复制最后一帧</span><em>${j.baseline.toFixed(4)}</em></div>`:`<div class="big">—</div><div class="cap">预测超出了真值的时间范围，没有误差可算</div>`}
+        <div class="row"><span>推演 ${j.steps} 步耗时</span><em>${(j.seconds*1000).toFixed(0)} ms</em></div>
+        <div class="row"><span>设备</span><em>${j.device}</em></div>
+        <div class="cap">模型只看到前 ${j.history} 帧，之后每一帧都由它自己的上一步预测接着推。</div></div>
+      <div class="stat"><div style="color:var(--mute);font-size:12.5px;margin-bottom:4px">误差随预测步数的增长（当前物理量）</div><svg id="curve" width="100%" height="190"></svg></div>
+    </div>`;
+  document.querySelectorAll("[data-c]").forEach(b=>b.onclick=()=>{st.ch=+b.dataset.c; layout(); draw();});
+  document.querySelectorAll("[data-p]").forEach(b=>b.onclick=()=>{st.plane=+b.dataset.p; layout(); draw();});
+  $("#pp").onclick=()=>st.timer?stop():play();
+  const T=j.pred[0].shape[0], k=j.history, tr=$("#track");
+  tr.innerHTML=`<div class="bar" style="left:0;width:${k/T*100}%;background:var(--given)"></div>
+    <div class="bar" style="left:${k/T*100}%;right:0;background:linear-gradient(90deg,#b88a2a,var(--gold))"></div>
+    <div class="knob" id="knob"></div><input type="range" min="0" max="${T-1}" value="${st.t}">`;
+  tr.querySelector("input").oninput=e=>{stop(); st.t=+e.target.value; draw();};
+  [[1,DIV],[2,DIV],[3,SEQ]].forEach(([i,s])=>{const b=$("#b"+i); if(b) drawBar(b,s);});
+  curve();
+}
+
+function rng(t, ch){ const [T,C]=t.shape, n=t.a.length/(T*C); let lo=Infinity,hi=-Infinity;
+  for(let ti=0;ti<T;ti++){ const o=(ti*C+ch)*n; for(let i=0;i<n;i++){const v=t.a[o+i]; if(v<lo)lo=v; if(v>hi)hi=v;} }
+  if(hi-lo<1e-12){hi=lo+1e-6;} return [lo,hi]; }
+
+function draw(){
+  const j=st.res; if(!j) return; const d=j.dim, ch=st.ch, C=j.channels.length;
+  const T=j.pred[0].shape[0], Ttr=j.truth[0].shape[0], t=st.t, k=j.history;
+  const knob=$("#knob"); if(knob) knob.style.left=`calc(${t/(T-1)*100}% - 2px)`;
+  $("#tl").innerHTML = t<k?`第 ${t} 帧　给定`:`第 ${t} 帧　<b>预测第 ${t-k+1} 步</b>`;
+  if(d===1){
+    const tr=j.truth[0], pr=j.pred[0], X=pr.shape[2], [lo,hi]=rng(tr,ch), pad=(hi-lo)*0.08;
+    const cv=$("#c0"), r=cv.getBoundingClientRect(), dpr=devicePixelRatio||1; cv.width=r.width*dpr; cv.height=r.height*dpr;
+    const g=cv.getContext("2d"); g.fillStyle="#0d1426"; g.fillRect(0,0,cv.width,cv.height);
+    const Y=v=>cv.height*(1-(v-lo+pad)/(hi-lo+2*pad)), line=(arr,o,col,dash)=>{g.strokeStyle=col; g.lineWidth=2*dpr; g.setLineDash(dash.map(x=>x*dpr)); g.beginPath();
+      for(let i=0;i<X;i++){const x=i/(X-1)*cv.width, y=Y(arr[o+i]); i?g.lineTo(x,y):g.moveTo(x,y);} g.stroke(); g.setLineDash([]);};
+    if(t<Ttr) line(tr.a,(t*C+ch)*X,"#e8ecf5",[]);
+    line(pr.a,(t*C+ch)*X,"#f2c14e",[6,4]);
+    // space-time maps: rows = time
+    const st2=(src,TT)=>{const a=new Float32Array(TT*X); for(let ti=0;ti<TT;ti++) for(let i=0;i<X;i++) a[ti*X+i]=src.a[(ti*C+ch)*X+i]; return a;};
+    const A=st2(tr,Ttr), B=st2(pr,Ttr), E=A.map((v,i)=>Math.abs(B[i]-v)); const emax=Math.max(...E.slice(k*X))||1;
+    const mark=(ctx,cv)=>{ctx.strokeStyle="rgba(255,255,255,.85)"; ctx.setLineDash([5,4]); const y=cv.height*(1-k/Ttr); ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(cv.width,y); ctx.stroke(); ctx.setLineDash([]);
+      ctx.fillStyle="rgba(242,193,78,.9)"; const yt=cv.height*(1-(Math.min(t,Ttr-1)+.5)/Ttr); ctx.fillRect(0,yt-1,cv.width,2);};
+    mark(drawField($("#c1"),A,0,Ttr,X,lo,hi,DIV),$("#c1")); mark(drawField($("#c2"),B,0,Ttr,X,lo,hi,DIV),$("#c2")); mark(drawField($("#c3"),E,0,Ttr,X,0,emax,SEQ),$("#c3"));
+    $("#lo1").textContent=$("#lo2").textContent=fmt(lo); $("#hi1").textContent=$("#hi2").textContent=fmt(hi); $("#hi3").textContent=fmt(emax);
+  } else {
+    const p=d===3?st.plane:0, tr=j.truth[p], pr=j.pred[p], H=pr.shape[2], W=pr.shape[3], n=H*W, [lo,hi]=rng(tr,ch);
+    const tt=Math.min(t,Ttr-1), o=(t*C+ch)*n, ot=(tt*C+ch)*n;
+    if(t<Ttr) drawField($("#c1"),tr.a,ot,H,W,lo,hi,DIV); else { const g=$("#c1").getContext("2d"); g.fillStyle="#0d1426"; g.fillRect(0,0,9999,9999); }
+    drawField($("#c2"),pr.a,o,H,W,lo,hi,DIV);
+    const E=new Float32Array(n); if(t<Ttr) for(let i=0;i<n;i++) E[i]=Math.abs(pr.a[o+i]-tr.a[ot+i]);
+    const emax=(hi-lo)*0.25; drawField($("#c3"),E,0,H,W,0,emax,SEQ);
+    $("#lo1").textContent=$("#lo2").textContent=fmt(lo); $("#hi1").textContent=$("#hi2").textContent=fmt(hi); $("#hi3").textContent=fmt(emax);
+  }
+}
+
+function curve(){
+  const j=st.res, svg=$("#curve"); if(!j.nrmse_t.length){svg.innerHTML=""; return;}
+  const a=j.nrmse_t.map(r=>r[st.ch]), b=j.baseline_t.map(r=>r[st.ch]), n=a.length, W=svg.clientWidth||600, H=190, L=48, R=12, Tp=10, B=30;
+  const ymax=Math.max(...a,...b)*1.1||1, X=i=>L+(n===1?0.5:i/(n-1))*(W-L-R), Y=v=>Tp+(1-v/ymax)*(H-Tp-B);
+  const path=arr=>arr.map((v,i)=>`${i?"L":"M"}${X(i).toFixed(1)},${Y(v).toFixed(1)}`).join("");
+  let g=""; for(let q=0;q<=4;q++){const v=ymax*q/4; g+=`<line x1="${L}" x2="${W-R}" y1="${Y(v)}" y2="${Y(v)}" stroke="#24304b"/><text x="${L-6}" y="${Y(v)+4}" text-anchor="end">${fmt(v)}</text>`;}
+  svg.innerHTML=`${g}<path d="${path(b)}" fill="none" stroke="#8d99b3" stroke-width="1.6" stroke-dasharray="5 4"/>
+    <path d="${path(a)}" fill="none" stroke="#f2c14e" stroke-width="2.4"/>
+    <text x="${X(n-1)}" y="${Y(a[n-1])-8}" text-anchor="end" style="fill:#f2c14e">OmniArch</text>
+    <text x="${X(n-1)}" y="${Y(b[n-1])-8}" text-anchor="end">复制最后一帧</text>
+    <text x="${(L+W-R)/2}" y="${H-6}" text-anchor="middle">预测步数 →（纵轴：相对误差，越低越好）</text>`;
+}
+
+function play(){ stop(); const T=st.res.pred[0].shape[0]; $("#pp").textContent="❚❚";
+  st.timer=setInterval(()=>{ st.t=(st.t+1)%T; if(st.t===0) st.t=Math.max(0,st.res.history-1); draw(); const inp=document.querySelector("#track input"); if(inp) inp.value=st.t; },220); }
+function stop(){ if(st.timer){clearInterval(st.timer); st.timer=null;} const b=$("#pp"); if(b) b.textContent="▶"; }
+addEventListener("resize",()=>{ if(st.res){ draw(); curve(); } });
+boot().catch(e=>{$("#stage").innerHTML=`<div class="err">加载失败：${e.message}</div>`;});
+</script>
+</body>
+</html>

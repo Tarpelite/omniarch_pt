@@ -1,0 +1,7 @@
+__pycache__/
+*.egg-info/
+runs/
+weights/*.pt
+*_pred.npz
+*.gif
+.env

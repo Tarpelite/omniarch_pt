@@ -1,0 +1,4 @@
+runs/
+weights/
+.git/
+**/__pycache__/
