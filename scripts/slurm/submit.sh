@@ -18,7 +18,7 @@ SBATCH=(sbatch); [ -n "${OA_DRYRUN:-}" ] && SBATCH=(sbatch --test-only)
 case "${1:-}" in
   prepare)
     N=$("$OA_PYTHON" scripts/prepare_pdebench.py --root x --out x --list | wc -l)
-    "${SBATCH[@]}" -J oa-prep -p "$SLURM_CPU_PARTITION" -c 4 --mem=24G -t 12:00:00 --array=0-$((N - 1))%24 \
+    "${SBATCH[@]}" -J oa-prep -p "$SLURM_CPU_PARTITION" -c 4 --mem=24G -t 12:00:00 --array=0-$((N - 1)) \
       -o "$OA_LOGS/%x-%A_%a.out" --export=ALL scripts/slurm/prepare.sbatch ;;
   train)
     PRESET=${2:-mini}; shift $(( $# >= 2 ? 2 : 1 ))
@@ -26,9 +26,10 @@ case "${1:-}" in
       --mem="$OA_MEM" -t 7-00:00:00 -o "$OA_LOGS/%x-%j.out" \
       --export=ALL,PRESET="$PRESET",EXTRA="$*" scripts/slurm/train.sbatch ;;
   scaling)
-    # 4 model sizes x 3 data fractions, one GPU each (see scripts/slurm/scaling.sbatch)
+    # 4 model sizes x 3 data fractions, one GPU each (see scripts/slurm/scaling.sbatch); no array throttle:
+    # the per-task GPU request already limits concurrency, and throttled arrays confuse some job exporters
     "${SBATCH[@]}" -J oa-scaling -p "$SLURM_GPU_PARTITION" "${NODE_ARGS[@]}" --gres=gpu:1 -c 12 --mem=60G \
-      -t 1-00:00:00 --array="${CELLS:-0-11}"%"$OA_GPUS" -o "$OA_LOGS/%x-%A_%a.out" --export=ALL scripts/slurm/scaling.sbatch ;;
+      -t 1-00:00:00 --array="${CELLS:-0-11}" -o "$OA_LOGS/%x-%A_%a.out" --export=ALL scripts/slurm/scaling.sbatch ;;
   *)
     sed -n 2,9p "$0"; exit 1 ;;
 esac
