@@ -53,9 +53,12 @@ class OmniArchConfig:
 
 
 PRESETS = {
+    "nano": OmniArchConfig(hidden=128, layers=3, heads=4, ffn=352,
+                           width={1: 8, 2: 8, 3: 4}, modes={1: 16, 2: 12, 3: 6}, decoder_mlp=32),
     "tiny": OmniArchConfig(hidden=256, layers=4, heads=4, ffn=704,
                            width={1: 8, 2: 8, 3: 4}, modes={1: 16, 2: 12, 3: 8}, decoder_mlp=32),
     "mini": OmniArchConfig(),
+    "base": OmniArchConfig(hidden=1024, layers=16, heads=16, ffn=2816),
 }
 
 

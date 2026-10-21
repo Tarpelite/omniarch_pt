@@ -53,6 +53,7 @@ def get_args():
     ap.add_argument("--balanced", action="store_true", help="all GPUs draw the same dataset each step")
     ap.add_argument("--compile", action="store_true", help="torch.compile the transformer blocks")
     ap.add_argument("--augment", action="store_true", help="random periodic shifts and mirror images")
+    ap.add_argument("--data_frac", type=float, default=1.0, help="fraction of training trajectories per dataset")
     return ap.parse_args()
 
 
@@ -108,7 +109,7 @@ def main():
     loaders = []
     for i, d in enumerate((1, 2, 3)):
         ds = WindowBatches(entries, d, a.batch[i], a.window[i], seed=rank * 10 + d,
-                           shared_seed=(7 + d) if a.balanced else None, augment=a.augment)
+                           shared_seed=(7 + d) if a.balanced else None, augment=a.augment, data_frac=a.data_frac)
         loaders.append(iter(torch.utils.data.DataLoader(ds, batch_size=None, num_workers=a.workers,
                                                         pin_memory=True, persistent_workers=True,
                                                         prefetch_factor=4)))

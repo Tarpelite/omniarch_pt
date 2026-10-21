@@ -63,13 +63,14 @@ class WindowBatches(torch.utils.data.IterableDataset):
     Families are drawn uniformly, then a file inside the family.
     """
 
-    def __init__(self, entries, dim, batch, window, seed=0, shared_seed=None, augment=False):
+    def __init__(self, entries, dim, batch, window, seed=0, shared_seed=None, augment=False, data_frac=1.0):
         """shared_seed: if set, every GPU draws the same dataset sequence (different samples),
         so all ranks do the same amount of work per step and nobody waits at the gradient sync."""
         self.entries = [e for e in entries if e.dim == dim]
         self.fams = sorted({family(e.name) for e in self.entries})
         self.batch, self.window, self.seed, self.shared_seed = batch, window, seed, shared_seed
         self.augment = augment
+        self.data_frac = data_frac          # use only the first fraction of each dataset's training trajectories
 
     def __iter__(self):
         info = torch.utils.data.get_worker_info()
@@ -83,7 +84,8 @@ class WindowBatches(torch.utils.data.IterableDataset):
             a = e.array("train")
             T = a.shape[1]
             w = min(self.window, T)
-            idx = np.sort(rng.choice(a.shape[0], self.batch, replace=a.shape[0] < self.batch))
+            n = max(1, int(round(self.data_frac * a.shape[0])))
+            idx = np.sort(rng.choice(n, self.batch, replace=n < self.batch))
             t0 = rng.integers(0, T - w + 1, self.batch)
             x = np.stack([a[i, s:s + w] for i, s in zip(idx, t0)])
             types = torch.from_numpy(np.broadcast_to(e.types, (self.batch, len(e.types))).copy())
