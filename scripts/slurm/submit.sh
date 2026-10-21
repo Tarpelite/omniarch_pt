@@ -8,8 +8,9 @@
 #   OA_DRYRUN=1 scripts/slurm/submit.sh train mini  # check the request with sbatch --test-only, submit nothing
 set -euo pipefail
 cd "$(dirname "$0")/../.."
-[ -f .env ] || { echo "missing .env: cp .env.example .env and edit it"; exit 1; }
-set -a; source .env; set +a
+ENV_FILE=${OA_ENV:-.env}                 # e.g. OA_ENV=.env.node2 for a second node with other paths
+[ -f "$ENV_FILE" ] || { echo "missing $ENV_FILE: cp .env.example .env and edit it"; exit 1; }
+set -a; source "$ENV_FILE"; set +a
 mkdir -p "$OA_LOGS"
 NODE_ARGS=(); [ -n "${SLURM_NODE:-}" ] && NODE_ARGS=(-w "$SLURM_NODE")
 SBATCH=(sbatch); [ -n "${OA_DRYRUN:-}" ] && SBATCH=(sbatch --test-only)
@@ -27,7 +28,7 @@ case "${1:-}" in
   scaling)
     # 4 model sizes x 3 data fractions, one GPU each (see scripts/slurm/scaling.sbatch)
     "${SBATCH[@]}" -J oa-scaling -p "$SLURM_GPU_PARTITION" "${NODE_ARGS[@]}" --gres=gpu:1 -c 12 --mem=60G \
-      -t 1-00:00:00 --array=0-11%"$OA_GPUS" -o "$OA_LOGS/%x-%A_%a.out" --export=ALL scripts/slurm/scaling.sbatch ;;
+      -t 1-00:00:00 --array="${CELLS:-0-11}"%"$OA_GPUS" -o "$OA_LOGS/%x-%A_%a.out" --export=ALL scripts/slurm/scaling.sbatch ;;
   *)
     sed -n 2,9p "$0"; exit 1 ;;
 esac

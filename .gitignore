@@ -5,3 +5,5 @@ weights/*.pt
 *_pred.npz
 *.gif
 .env
+.env.*
+!.env.example
