@@ -2,7 +2,7 @@
 
 <h1 align="center">OmniArch-pt (智算天璇)</h1>
 
-<p align="center">A foundation model for forecasting 1D, 2D and 3D partial differential equations with a single set of weights</p>
+<p align="center">A foundation model for solving 1D, 2D and 3D partial differential equations with a single set of weights</p>
 
 <p align="center">
   <a href="https://arxiv.org/abs/2402.16014"><img src="https://img.shields.io/badge/arXiv-2402.16014-b31b1b.svg" alt="arXiv"></a>
@@ -10,7 +10,7 @@
   <a href="https://github.com/Tarpelite/omniarch_pt/stargazers"><img src="https://img.shields.io/github/stars/Tarpelite/omniarch_pt?style=social" alt="GitHub stars"></a>
 </p>
 
-OmniArch-pt is a PyTorch implementation of OmniArch, a foundation model for scientific computing that forecasts the evolution of one-, two- and three-dimensional partial differential equations with a single set of weights. Given the leading frames of a simulation, the model predicts the subsequent frames autoregressively.
+OmniArch-pt is a PyTorch implementation of OmniArch, a foundation model for scientific computing that solves one-, two- and three-dimensional partial differential equations with a single set of weights. Given the leading frames of a simulation, the model predicts the subsequent frames autoregressively.
 
 > **Preview release (v0.3).** The released checkpoints were trained from scratch on a subsampled version of PDEBench. They are intended for deployment and demonstration and do not reproduce the model or the results of the original paper. New results and checkpoints are published regularly.
 
