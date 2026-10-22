@@ -12,6 +12,10 @@
 
 OmniArch-pt is a PyTorch implementation of OmniArch, a foundation model for scientific computing that solves one-, two- and three-dimensional partial differential equations with a single set of weights. Given the leading frames of a simulation, the model predicts the subsequent frames autoregressively.
 
+<p align="center"><img src="docs/media/forecast.gif" alt="Forecasts of OmniArch base against ground truth" width="560"></p>
+
+<p align="center"><sub>Ten given frames, then eleven forecast steps by the same <code>base</code> checkpoint. Top: ground truth; bottom: OmniArch.</sub></p>
+
 > **Preview release (v0.3).** The released checkpoints were trained from scratch on a subsampled version of PDEBench. They are intended for deployment and demonstration and do not reproduce the model or the results of the original paper. New results and checkpoints are published regularly.
 
 ## News
@@ -25,6 +29,10 @@ OmniArch-pt is a PyTorch implementation of OmniArch, a foundation model for scie
 ![OmniArch architecture](docs/architecture.png)
 
 <sub>Architecture of OmniArch, reproduced from the ICML 2025 paper.</sub>
+
+![How OmniArch solves an equation step by step](docs/media/how_it_works.gif)
+
+<sub>One forecast step per frame: the current field, its Fourier spectrum with the retained modes, the attention of the new tokens over the history (averaged over heads and layers of <code>base</code>), and the predicted field against the ground truth.</sub>
 
 Each physical field at each time step is represented by one token. A Fourier encoder for each spatial dimension maps a field to a token, a shared Transformer with temporally causal attention predicts the tokens of the next time step, and a Fourier decoder maps them back to fields. Physical quantities are identified by their order rather than by name, so that a single model accepts arbitrary combinations of quantities and grid sizes.
 
