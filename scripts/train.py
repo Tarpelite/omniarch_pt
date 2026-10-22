@@ -51,10 +51,13 @@ def get_args():
     ap.add_argument("--eval_every", type=int, default=2000)
     ap.add_argument("--workers", type=int, default=6)
     ap.add_argument("--balanced", action="store_true", help="all GPUs draw the same dataset each step")
-    ap.add_argument("--compile", action="store_true", help="torch.compile the transformer blocks")
+    ap.add_argument("--compile", action="store_true",
+                    help="torch.compile the whole model (one graph per dimension and channel count; about 1.5x faster)")
     ap.add_argument("--augment", action="store_true", help="random periodic shifts and mirror images")
     ap.add_argument("--data_frac", type=float, default=1.0, help="fraction of training trajectories per dataset")
     ap.add_argument("--seed", type=int, default=0, help="changes initialisation, noise and data order")
+    ap.add_argument("--max_stride", type=int, default=1, help="random frame spacing 1..k per batch (time-step study)")
+    ap.add_argument("--time_pos", choices=["index", "stride"], default=None, help="override config.time_pos")
     ap.add_argument("--dims", default="123", help="spatial dimensions to train on, e.g. 3 or 23 (cross-dimension study)")
     ap.add_argument("--dim_frac", default="", help="per-dimension data fraction overriding --data_frac, e.g. 3:0.25")
     return ap.parse_args()
@@ -90,15 +93,21 @@ def main():
     cfg = copy.deepcopy(PRESETS[a.preset])
     if a.noise is not None:
         cfg.noise = a.noise
+    if a.time_pos is not None:
+        cfg.time_pos = a.time_pos
     model = OmniArch(cfg).to(dev)
     ema = copy.deepcopy(model).eval()
     for p in ema.parameters():
         p.requires_grad_(False)
+    # one GPU: no DDP wrapper and no zero-weight touch (both only serve the gradient all-reduce)
+    ddp = torch.nn.parallel.DistributedDataParallel(model, device_ids=[local]) if world > 1 else model
     if a.compile:
-        for i, blk in enumerate(model.blocks):
-            model.blocks[i] = torch.compile(blk, dynamic=True)
-    ddp = torch.nn.parallel.DistributedDataParallel(model, device_ids=[local])
+        for k in ("recompile_limit", "cache_size_limit"):    # graphs per (dimension, channel count, window)
+            if hasattr(torch._dynamo.config, k):
+                setattr(torch._dynamo.config, k, 64)
+        ddp = torch.compile(ddp, dynamic=False)
     dim_params = {d: list(model.enc[str(d)].parameters()) + list(model.dec[str(d)].parameters()) for d in (1, 2, 3)}
+    ema_params, model_params = list(ema.parameters()), list(model.parameters())
 
     decay, no_decay = [], []
     for n_, p in model.named_parameters():
@@ -116,7 +125,7 @@ def main():
         i = d - 1
         ds = WindowBatches(entries, d, a.batch[i], a.window[i], seed=rank * 10 + d + 1000 * a.seed,
                            shared_seed=(7 + d + 1000 * a.seed) if a.balanced else None, augment=a.augment,
-                           data_frac=dim_frac.get(d, a.data_frac))
+                           data_frac=dim_frac.get(d, a.data_frac), max_stride=a.max_stride)
         loaders[d] = iter(torch.utils.data.DataLoader(ds, batch_size=None, num_workers=a.workers,
                                                       pin_memory=True, persistent_workers=True,
                                                       prefetch_factor=4))
@@ -147,18 +156,22 @@ def main():
             i = d - 1
             item = next(loaders[d])
             x, types = item[0].to(dev, non_blocking=True), item[1].to(dev, non_blocking=True)
-            if len(item) == 3:
+            if item[2] is not None:
                 x = gpu_augment(x, *item[2])
-            ctx = ddp.no_sync() if k < len(dims) - 1 else contextlib.nullcontext()
+            stride = int(item[3])
+            ctx = ddp.no_sync() if world > 1 and k < len(dims) - 1 else contextlib.nullcontext()
             with ctx:
                 with torch.autocast("cuda", torch.bfloat16):
-                    pn, (mean, std) = ddp(x[:, :-1], types, noise=cfg.noise)
+                    pn, (mean, std) = ddp(x[:, :-1], types, noise=cfg.noise, dt=stride)
                 target = (x[:, 1:] - mean) / std
                 l = torch.nn.functional.mse_loss(pn.float(), target)
                 # zero-weight touch of the other dimensions' encoder/decoder so DDP sees a gradient
                 # for every parameter in every backward (they are not part of this graph otherwise)
-                touch = sum(p_.sum() for d_, ps in dim_params.items() if d_ != d for p_ in ps)
-                (a.loss_w[i] * l + 0.0 * touch).backward()
+                if world > 1:
+                    touch = sum(p_.sum() for d_, ps in dim_params.items() if d_ != d for p_ in ps)
+                    (a.loss_w[i] * l + 0.0 * touch).backward()
+                else:
+                    (a.loss_w[i] * l).backward()
             losses[i] = l.detach()
             del pn, mean, std, target, l, x
         gn = torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
@@ -166,8 +179,7 @@ def main():
         sched.step()
         with torch.no_grad():
             dk = min(a.ema, (1 + step) / (10 + step))
-            for pe, pm in zip(ema.parameters(), model.parameters()):
-                pe.lerp_(pm, 1 - dk)
+            torch._foreach_lerp_(ema_params, model_params, 1 - dk)
         if rank == 0 and (step % 50 == 0 or step == a.steps - 1):
             ls = torch.stack(losses).tolist()
             rec = dict(step=step, l1d=ls[0], l2d=ls[1], l3d=ls[2], gn=gn.item(), lr=sched.get_last_lr()[0],

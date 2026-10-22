@@ -69,7 +69,7 @@ class OmniArchPredictor:
         if shape[-1] // 2 + 1 < m:
             raise ValueError(f"grid size {shape[-1]} too small, need >= {2 * m - 2} for {dim}D")
 
-    def predict(self, history, steps, batched=False):
+    def predict(self, history, steps, batched=False, dt=1.0):
         """history: (K, C, *S), or (B, K, C, *S) with batched=True. Returns the same layout with `steps` frames."""
         h = np.asarray(history, dtype=np.float32)
         single = not batched
@@ -84,7 +84,7 @@ class OmniArchPredictor:
         types = torch.arange(h.shape[2], device=self.device).expand(x.shape[0], -1)
         t0 = time.time()
         with torch.autocast(self.device.type, torch.bfloat16, enabled=self.amp):
-            out = self.model.rollout(x, types, steps, self.context)
+            out = self.model.rollout(x, types, steps, self.context, dt=dt)
         if self.device.type == "cuda":
             torch.cuda.synchronize()
         self.last_seconds = time.time() - t0

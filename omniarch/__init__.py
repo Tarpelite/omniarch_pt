@@ -3,4 +3,4 @@ from .inference import OmniArchPredictor
 from .model import MAX_CHANNELS, PRESETS, OmniArch, OmniArchConfig
 
 __all__ = ["OmniArch", "OmniArchConfig", "OmniArchPredictor", "MAX_CHANNELS", "PRESETS"]
-__version__ = "0.2.0"
+__version__ = "0.3.0"

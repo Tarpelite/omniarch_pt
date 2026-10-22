@@ -40,6 +40,11 @@ class OmniArchConfig:
     n_types: int = MAX_CHANNELS
     max_frames: int = 256
     noise: float = 0.01
+    # "index": time positions are frame indices, the step size is inferred from the context (default);
+    # "stride": positions are index x frame spacing, so the spacing is given to the model explicitly
+    time_pos: str = "index"
+    # 1: point-wise decoder MLP (default); k > 1: k^d convolutions, so small structures can move locally
+    decoder_kernel: int = 1
 
     @classmethod
     def from_dict(cls, d):
@@ -173,12 +178,18 @@ class FourierEncoder(nn.Module):
 class FourierDecoder(nn.Module):
     """Token -> next-frame increment: linear head to low modes, inverse transform, point-wise MLP with the current field."""
 
-    def __init__(self, dim, width, modes, hidden, mlp):
+    def __init__(self, dim, width, modes, hidden, mlp, kernel=1):
         super().__init__()
-        self.dim, self.width, self.modes = dim, width, modes
+        self.dim, self.width, self.modes, self.kernel = dim, width, modes, kernel
         self.head = nn.Linear(hidden, width * _n_modes(dim, modes) * 2)
-        self.mlp = nn.Sequential(nn.Linear(width + 1, mlp), nn.GELU(), nn.Linear(mlp, mlp), nn.GELU(),
-                                 nn.Linear(mlp, 1))
+        if kernel == 1:
+            self.mlp = nn.Sequential(nn.Linear(width + 1, mlp), nn.GELU(), nn.Linear(mlp, mlp), nn.GELU(),
+                                     nn.Linear(mlp, 1))
+        else:
+            conv = {1: nn.Conv1d, 2: nn.Conv2d, 3: nn.Conv3d}[dim]
+            pad = dict(padding=kernel // 2, padding_mode="circular")
+            self.mlp = nn.Sequential(conv(width + 1, mlp, kernel, **pad), nn.GELU(), conv(mlp, mlp, kernel, **pad),
+                                     nn.GELU(), conv(mlp, 1, 1))
         self.fused = None                                   # None: follow OMNIARCH_FUSED; True/False: override
 
     def forward(self, h, skip):                             # h: (N, hidden), skip: (N, *S)
@@ -188,6 +199,10 @@ class FourierDecoder(nn.Module):
         coef = self.head(h).float().view(h.shape[0], self.width, *([2 * m] * (self.dim - 1)), m, 2)
         with torch.autocast(h.device.type, enabled=False):
             field_ = _itdft(torch.view_as_complex(coef.contiguous()), S, m)             # (N, w, *S)
+        if self.kernel > 1:                                 # local convolutional decoder
+            dt = self.mlp[0].weight.dtype if not torch.is_autocast_enabled() else torch.get_autocast_dtype(h.device.type)
+            z = torch.cat([field_.to(dt), skip.unsqueeze(1).to(dt)], 1)
+            return self.mlp(z).squeeze(1)
         if (self.fused if self.fused is not None else USE_FUSED) and fused_mlp.available(h.device, self.mlp):
             bf16 = torch.is_autocast_enabled() and torch.get_autocast_dtype(h.device.type) == torch.bfloat16
             return fused_mlp.fused_point_mlp(field_, skip, self.mlp, bf16)
@@ -243,7 +258,7 @@ class OmniArch(nn.Module):
         super().__init__()
         c = self.config = config
         self.enc = nn.ModuleDict({str(d): FourierEncoder(d, c.width[d], c.modes[d], c.hidden) for d in (1, 2, 3)})
-        self.dec = nn.ModuleDict({str(d): FourierDecoder(d, c.width[d], c.modes[d], c.hidden, c.decoder_mlp)
+        self.dec = nn.ModuleDict({str(d): FourierDecoder(d, c.width[d], c.modes[d], c.hidden, c.decoder_mlp, c.decoder_kernel)
                                   for d in (1, 2, 3)})
         self.type_emb = nn.Embedding(c.n_types, c.hidden)
         self.blocks = nn.ModuleList([Block(c) for _ in range(c.layers)])
@@ -273,8 +288,9 @@ class OmniArch(nn.Module):
         std = x.std(red, keepdim=True, unbiased=False).clamp_min(1e-4)
         return mean, std
 
-    def forward(self, x, types=None, noise=None):
+    def forward(self, x, types=None, noise=None, dt=1.0):
         """x: (B, T, C, *S) consecutive frames; types: (B, C) slot ids, default 0..C-1.
+        dt: frame spacing in units of the training spacing; used only when config.time_pos == "stride".
 
         Returns the normalized prediction of frames 1..T (B, T, C, *S) and (mean, std)
         so that prediction * std + mean is in physical units.
@@ -292,8 +308,9 @@ class OmniArch(nn.Module):
         tok = self.enc[str(dim)](flat).view(B, T, C, -1)
         tok = tok + self.type_emb(types)[:, None]
         tok = tok.view(B, T * C, -1)
-        pos = torch.arange(T, device=x.device).repeat_interleave(C)
-        mask = pos[None, :] <= pos[:, None]                 # block-causal: see every channel up to own time
+        idx = torch.arange(T, device=x.device).repeat_interleave(C)
+        mask = idx[None, :] <= idx[:, None]                 # block-causal: see every channel up to own time
+        pos = idx.float() * float(dt) if self.config.time_pos == "stride" else idx
         for blk in self.blocks:
             tok = blk(tok, pos, mask)
         h = self.norm(tok).reshape(B * T * C, -1)
@@ -301,13 +318,13 @@ class OmniArch(nn.Module):
         return xn + delta.to(xn.dtype), (mean, std)
 
     @torch.no_grad()
-    def rollout(self, history, types=None, steps=1, context=15):
+    def rollout(self, history, types=None, steps=1, context=15, dt=1.0):
         """Autoregressive forecast. history: (B, K, C, *S) -> (B, steps, C, *S) in physical units."""
         traj = history
         out = []
         for _ in range(steps):
             inp = traj[:, -context:]
-            pn, (mean, std) = self(inp, types)
+            pn, (mean, std) = self(inp, types, dt=dt)
             nxt = (pn[:, -1:] * std + mean).to(history.dtype)
             out.append(nxt)
             traj = torch.cat([traj, nxt], 1)

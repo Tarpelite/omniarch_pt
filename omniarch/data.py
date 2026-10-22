@@ -63,7 +63,8 @@ class WindowBatches(torch.utils.data.IterableDataset):
     Families are drawn uniformly, then a file inside the family.
     """
 
-    def __init__(self, entries, dim, batch, window, seed=0, shared_seed=None, augment=False, data_frac=1.0):
+    def __init__(self, entries, dim, batch, window, seed=0, shared_seed=None, augment=False, data_frac=1.0,
+                 max_stride=1, min_window=6):
         """shared_seed: if set, every GPU draws the same dataset sequence (different samples),
         so all ranks do the same amount of work per step and nobody waits at the gradient sync."""
         self.entries = [e for e in entries if e.dim == dim]
@@ -71,6 +72,7 @@ class WindowBatches(torch.utils.data.IterableDataset):
         self.batch, self.window, self.seed, self.shared_seed = batch, window, seed, shared_seed
         self.augment = augment
         self.data_frac = data_frac          # use only the first fraction of each dataset's training trajectories
+        self.max_stride, self.min_window = max_stride, min_window   # random frame spacing per batch
 
     def __iter__(self):
         info = torch.utils.data.get_worker_info()
@@ -83,14 +85,17 @@ class WindowBatches(torch.utils.data.IterableDataset):
             e = cands[pick.integers(len(cands))]
             a = e.array("train")
             T = a.shape[1]
-            w = min(self.window, T)
+            top = max(1, min(self.max_stride, (T - 1) // (self.min_window - 1)))
+            st = int(pick.integers(1, top + 1)) if top > 1 else 1
+            w = min(self.window, (T - 1) // st + 1)
+            span = (w - 1) * st + 1
             n = max(1, int(round(self.data_frac * a.shape[0])))
             idx = np.sort(rng.choice(n, self.batch, replace=n < self.batch))
-            t0 = rng.integers(0, T - w + 1, self.batch)
-            x = np.stack([a[i, s:s + w] for i, s in zip(idx, t0)])
+            t0 = rng.integers(0, T - span + 1, self.batch)
+            x = np.stack([a[i, s:s + span:st] for i, s in zip(idx, t0)])
             types = torch.from_numpy(np.broadcast_to(e.types, (self.batch, len(e.types))).copy())
             if not self.augment:
-                yield torch.from_numpy(x), types
+                yield torch.from_numpy(x), types, None, st
                 continue
             # augmentation itself runs on the GPU (see gpu_augment); here only draw the random choices
             S = x.shape[3:]
@@ -99,7 +104,7 @@ class WindowBatches(torch.utils.data.IterableDataset):
             sign = np.ones((self.batch, len(e.types)), np.float32)
             for k, c in e.flip_sign.items():
                 sign[flip[:, k], c] = -1.0
-            yield torch.from_numpy(x), types, (torch.from_numpy(shift), torch.from_numpy(flip), torch.from_numpy(sign))
+            yield torch.from_numpy(x), types, (torch.from_numpy(shift), torch.from_numpy(flip), torch.from_numpy(sign)), st
 
 
 def gpu_augment(x, shift, flip, sign):

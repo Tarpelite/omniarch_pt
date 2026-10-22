@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "omniarch-pt"
-version = "0.2.0"
+version = "0.3.0"
 description = "OmniArch (智算天璇) in PyTorch: a 1D/2D/3D unified PDE foundation model you can run on a laptop"
 readme = "README.md"
 requires-python = ">=3.9"

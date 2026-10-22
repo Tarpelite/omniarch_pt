@@ -6,6 +6,7 @@ set -euo pipefail
 cd "${OA_REPO_SUBMIT:-$SLURM_SUBMIT_DIR}"
 ENV_FILE=.env.$(hostname -s); [ -f "$ENV_FILE" ] || ENV_FILE=.env
 set -a; source "$ENV_FILE"; set +a
+OA_REPO=${REPO_OVERRIDE:-$OA_REPO}          # run another code checkout (e.g. an experiment branch) with the same paths
 cd "$OA_REPO"
 OUT="$OA_RUNS/${GROUP:-scaling}/${PRESET}_d${FRAC}_s${STEPS}_seed${SEED}${TAG:+_$TAG}"
 export OMP_NUM_THREADS=4

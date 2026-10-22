@@ -1,0 +1,58 @@
+{
+ "note": "omniarch-base v0.2; forecast frames 10..end given the K frames before frame 10 (scripts/evaluate.py --start 10 --history K)",
+ "history_10": {
+  "adv": 0.1686,
+  "burgers": 0.1465,
+  "cfd1d": 0.1385,
+  "cfd2d": 0.2361,
+  "cfd3d": 0.5177,
+  "diffreact2d": 0.142,
+  "diffsorp": 0.0394,
+  "reacdiff": 0.0426,
+  "swe2d": 0.0036
+ },
+ "history_4": {
+  "adv": 0.1543,
+  "burgers": 0.2127,
+  "cfd1d": 0.1883,
+  "cfd2d": 0.2932,
+  "cfd3d": 0.545,
+  "diffreact2d": 0.1941,
+  "diffsorp": 0.0761,
+  "reacdiff": 0.0423,
+  "swe2d": 0.0069
+ },
+ "history_2": {
+  "adv": 0.1719,
+  "burgers": 0.2267,
+  "cfd1d": 0.2493,
+  "cfd2d": 0.3841,
+  "cfd3d": 0.6129,
+  "diffreact2d": 0.9163,
+  "diffsorp": 0.0846,
+  "reacdiff": 0.0422,
+  "swe2d": 0.0233
+ },
+ "history_1": {
+  "adv": 0.7938,
+  "burgers": 0.2429,
+  "cfd1d": 0.3619,
+  "cfd2d": 0.4915,
+  "cfd3d": 0.6669,
+  "diffreact2d": 0.9338,
+  "diffsorp": 0.088,
+  "reacdiff": 0.0424,
+  "swe2d": 0.0612
+ },
+ "copy_last": {
+  "adv": 1.0005,
+  "burgers": 0.3354,
+  "cfd1d": 0.4526,
+  "cfd2d": 0.648,
+  "cfd3d": 0.8857,
+  "diffreact2d": 0.4955,
+  "diffsorp": 0.1569,
+  "reacdiff": 0.0424,
+  "swe2d": 0.1101
+ }
+}
