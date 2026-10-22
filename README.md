@@ -59,11 +59,11 @@ Fields need no names, but their order matters: keep the order used in training f
 
 v0.2 (current):
 
-| Checkpoint | Params | Training | Download (BUAA Pan) |
+| Checkpoint | Params | Training | Download (BUAA Pan, valid until 2027-10-22) |
 |---|---|---|---|
-| `omniarch-base.pt` (1.2 GB) | 308 M | 36k steps | LINK_BASE |
-| `omniarch-mini.pt` (293 MB) | 77 M | 72k steps | LINK_MINI |
-| `omniarch-tiny.pt` (54 MB) | 14 M | 108k steps | LINK_TINY |
+| `omniarch-base.pt` (1.2 GB) | 308 M | 36k steps | https://bhpan.buaa.edu.cn/link/AA645380522EB54391B3A496443C6CD709 |
+| `omniarch-mini.pt` (293 MB) | 77 M | 72k steps | https://bhpan.buaa.edu.cn/link/AA00790700453A44E893F3130C7DD2B618 |
+| `omniarch-tiny.pt` (54 MB) | 14 M | 108k steps | https://bhpan.buaa.edu.cn/link/AA5516D6EE8EF74748AD809475482F5340 |
 
 `omniarch` looks for `weights/omniarch-base.pt`, then `-mini`, then `-tiny`. v0.1 checkpoints (mini 0.179, tiny 0.243) remain available: [mini](https://bhpan.buaa.edu.cn/link/AAA0212103021B4601B97DA21AE1A37922), [tiny](https://bhpan.buaa.edu.cn/link/AA4BD26995FE344D5EA1622A3F6ECECC6F) (valid until 2027-01-01).
 

@@ -109,13 +109,13 @@ git clone https://github.com/Tarpelite/omniarch_pt.git
 cd omniarch_pt
 ```
 
-权重从北航网盘下载：
+权重从北航网盘下载，链接有效期到 2027 年 10 月 22 日：
 
 | 权重 | 大小 | 下载链接 |
 |---|---|---|
-| omniarch-base.pt | 1.2GB | LINK_BASE |
-| omniarch-mini.pt | 293MB | LINK_MINI |
-| omniarch-tiny.pt | 54MB | LINK_TINY |
+| omniarch-base.pt | 1.2GB | https://bhpan.buaa.edu.cn/link/AA645380522EB54391B3A496443C6CD709 |
+| omniarch-mini.pt | 293MB | https://bhpan.buaa.edu.cn/link/AA00790700453A44E893F3130C7DD2B618 |
+| omniarch-tiny.pt | 54MB | https://bhpan.buaa.edu.cn/link/AA5516D6EE8EF74748AD809475482F5340 |
 
 下载后放进代码目录下的 `weights/` 文件夹。放了几个就按 base、mini、tiny 的顺序优先使用。不能访问 GitHub 的机器，直接拷贝整个代码文件夹和权重文件即可。
 
