@@ -7,3 +7,4 @@ weights/*.pt
 .env
 .env.*
 !.env.example
+!docs/media/*.gif
