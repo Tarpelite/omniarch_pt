@@ -25,7 +25,7 @@ The returned file contains the predicted frames (`prediction`) and the computati
 
 ## Number of given frames
 
-The model infers the governing dynamics and the time step from the given frames, and its accuracy therefore depends on the length of the history. The table reports the mean nRMSE of `omniarch-base` over the nine PDE families when the same frames are forecast from histories of different lengths.
+The model infers the governing dynamics and the time step from the given frames, and its accuracy therefore depends on the length of the history. The table reports the mean nRMSE of the v0.2 `omniarch-base` checkpoint over the nine PDE families when the same frames are forecast from histories of different lengths.
 
 | Given frames | 10 | 4 | 2 | 1 |
 |---|---|---|---|---|

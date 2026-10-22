@@ -16,10 +16,11 @@ OmniArch-pt is a PyTorch implementation of OmniArch, a foundation model for scie
 
 <p align="center"><sub>Ten given frames, then eleven forecast steps by the same <code>base</code> checkpoint. Top: ground truth; bottom: OmniArch.</sub></p>
 
-> **Preview release (v0.3).** The released checkpoints were trained from scratch on a subsampled version of PDEBench. They are intended for deployment and demonstration and do not reproduce the model or the results of the original paper. New results and checkpoints are published regularly.
+> **Preview release (v0.4).** The released checkpoints were trained from scratch on a subsampled version of PDEBench. They are intended for deployment and demonstration and do not reproduce the model or the results of the original paper. New results and checkpoints are published regularly.
 
 ## News
 
+- **2026-10-22, v0.4.** New `base` checkpoint trained for twice as many steps (72k): mean nRMSE 0.145, against 0.159 for v0.2 ([results](docs/results.md)).
 - **2026-10-22, v0.3.** Studies of joint training across spatial dimensions and of robustness to the frame spacing; faster training ([studies](docs/studies.md), [training](docs/training.md#training-speed)).
 - **2026-10-22, v0.2.** Public release of the `base`, `mini` and `tiny` checkpoints together with a scaling study, a web demonstration and an HTTP interface.
 - **2026-10-21, v0.1.** Initial PyTorch implementation with a command-line tool.
@@ -62,17 +63,18 @@ The Python and HTTP interfaces and the input format are described in [docs/usage
 
 | Checkpoint | Parameters | Training | Mean nRMSE | Download (BUAA Pan, valid until 2027-10-22) |
 |---|---|---|---|---|
-| `omniarch-base.pt` (1.2 GB) | 308 M | 36k steps | 0.159 | https://bhpan.buaa.edu.cn/link/AA645380522EB54391B3A496443C6CD709 |
+| `omniarch-base.pt` (1.2 GB) | 308 M | 72k steps | 0.145 | https://bhpan.buaa.edu.cn/link/AA4C3D921A4EC6439B952F161E819F3938 |
 | `omniarch-mini.pt` (293 MB) | 77 M | 72k steps | 0.168 | https://bhpan.buaa.edu.cn/link/AA00790700453A44E893F3130C7DD2B618 |
 | `omniarch-tiny.pt` (54 MB) | 14 M | 108k steps | 0.212 | https://bhpan.buaa.edu.cn/link/AA5516D6EE8EF74748AD809475482F5340 |
 
-Mean nRMSE follows the PDEBench protocol (ten given frames, autoregressive rollout to the end of each trajectory, mean over nine PDE families; lower is better). Copying the last given frame yields 0.459. Without `--ckpt`, the tool loads `weights/omniarch-base.pt`, then `-mini`, then `-tiny`. Per-family results and zero-shot cases are listed in [docs/results.md](docs/results.md).
+Mean nRMSE follows the PDEBench protocol (ten given frames, autoregressive rollout to the end of each trajectory, mean over nine PDE families; lower is better). Copying the last given frame yields 0.459. The v0.2 `base` checkpoint (36k steps, 0.159) remains available at https://bhpan.buaa.edu.cn/link/AA645380522EB54391B3A496443C6CD709. Without `--ckpt`, the tool loads `weights/omniarch-base.pt`, then `-mini`, then `-tiny`. Per-family results and zero-shot cases are listed in [docs/results.md](docs/results.md).
 
 ## Roadmap
 
 - [x] PyTorch implementation, command-line tool, web demonstration and HTTP interface (v0.1)
 - [x] `base`, `mini` and `tiny` checkpoints; scaling study (v0.2)
 - [x] Studies of joint training across dimensions and of frame-spacing robustness; faster training (v0.3)
+- [x] `base` trained for 72k steps (v0.4)
 - [ ] Robustness to the frame spacing in the `base` checkpoint
 - [ ] Larger checkpoints, towards approximately one billion parameters
 - [ ] Training data beyond PDEBench

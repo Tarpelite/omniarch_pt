@@ -13,7 +13,7 @@ Thirty-six models were trained on PDEBench, each on a single GPU with 1D, 2D and
 | nano | 4 M | 0.322 ± 0.002 | 0.257 after 108k steps |
 | tiny | 14 M | 0.271 ± 0.003 | 0.212 after 108k steps |
 | mini | 77 M | 0.217 ± 0.004 | 0.168 after 72k steps |
-| base | 308 M | 0.187 ± 0.001 | 0.159 after 36k steps |
+| base | 308 M | 0.187 ± 0.001 | 0.159 after 36k steps, 0.145 after 72k steps |
 | large | 833 M | 0.180 (one seed) | — |
 
 At a fixed budget of 12k steps, the mean error decreases with the number of parameters N approximately as N^-0.11 between 4 M and 308 M parameters, and the variation between seeds amounts to 1-2% of the differences between model sizes. The 833 M model lies above this trend, which indicates that it is under-trained at this budget.
