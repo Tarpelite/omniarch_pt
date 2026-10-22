@@ -1,54 +1,55 @@
 # Studies
 
-Controlled experiments behind the released checkpoints. Raw numbers are in `../results/`.
+This page summarises the controlled experiments underlying the released checkpoints. All models are evaluated with the protocol described in [results.md](results.md). The raw numbers are provided in the `results/` directory of the repository.
 
 ## Scaling
 
-![scaling](scaling.png)
+![Scaling study](scaling.png)
 
-36 training runs on PDEBench (single GPU each; 1D/2D/3D batches 256/64/16 per step), evaluated with the benchmark protocol in [results.md](results.md). Raw numbers in `results/scaling.json`, analysis in `scripts/analyze_scaling.py`.
+Thirty-six models were trained on PDEBench, each on a single GPU with 1D, 2D and 3D batches of 256, 64 and 16 samples per step. The raw numbers are in `results/scaling.json` and the analysis script is `scripts/analyze_scaling.py`.
 
-| Model | Params | 12k steps (3 seeds) | Longer training |
+| Model | Parameters | 12k steps (three seeds) | Longer training |
 |---|---|---|---|
-| nano | 4M | 0.322 ± 0.002 | 0.257 at 108k |
-| tiny | 14M | 0.271 ± 0.003 | 0.212 at 108k |
-| mini | 77M | 0.217 ± 0.004 | 0.168 at 72k |
-| base | 308M | 0.187 ± 0.001 | 0.159 at 36k |
-| large | 833M | 0.180 (1 seed) | - |
+| nano | 4 M | 0.322 ± 0.002 | 0.257 after 108k steps |
+| tiny | 14 M | 0.271 ± 0.003 | 0.212 after 108k steps |
+| mini | 77 M | 0.217 ± 0.004 | 0.168 after 72k steps |
+| base | 308 M | 0.187 ± 0.001 | 0.159 after 36k steps |
+| large | 833 M | 0.180 (one seed) | — |
 
-- **Model size.** At a fixed 12k steps the error follows err ∝ N^-0.11 from 4M to 308M parameters; seed-to-seed spread is 1-2% of the gaps between sizes. The 833M model falls above the trend line: at this budget it is under-trained.
-- **Training length matters more than size at this scale.** base trained 3x longer (0.159) beats large at 12k steps (0.180) for less compute.
-- **Data starts to matter with longer training.** At 12k steps 25% of the training set is as good as 100%; at 36k-108k steps the 25% runs are 5-7% worse.
-- **3D barely moves** (N^-0.03, and little gain from longer training). It is limited by something other than scale, most likely training data (700 trajectories) and the 32³ resolution.
+At a fixed budget of 12k steps, the mean error decreases with the number of parameters N approximately as N^-0.11 between 4 M and 308 M parameters, and the variation between seeds amounts to 1-2% of the differences between model sizes. The 833 M model lies above this trend, which indicates that it is under-trained at this budget.
 
+At the present scale, training length matters more than model size: `base` trained for three times as many steps (0.159) outperforms `large` trained for 12k steps (0.180) at a lower computational cost.
 
-## Cross-dimension training
+The amount of data becomes relevant only for longer training. After 12k steps, a quarter of the training set yields the same error as the full set; after 36k to 108k steps, the models trained on a quarter of the data are 5-7% worse.
 
-![cross-dimension study](crossdim.png)
+The three-dimensional error changes little with model size (N^-0.03) or training length. It is therefore limited by factors other than scale, most probably the small number of training trajectories (about 700) and the 32³ resolution.
 
-Does one model for 1D, 2D and 3D beat one model per dimension? 22 runs, 36k steps each, `mini` with 2 seeds and `tiny` with 1. Per-dimension mean nRMSE; 1D leaves out reaction-diffusion, whose PDEBench trajectories are constant after the first saved frame.
+## Joint training across spatial dimensions
 
-| Trained on | mini 1D | mini 2D | mini 3D | tiny 1D | tiny 2D | tiny 3D |
+![Joint training across dimensions](crossdim.png)
+
+This study examines whether a single model trained on one-, two- and three-dimensional data outperforms models trained on one dimension only. It comprises 22 runs of 36k steps each: `mini` with two seeds and `tiny` with one. The table reports the mean nRMSE per dimension; the one-dimensional reaction-diffusion family is excluded for the reason given in [results.md](results.md).
+
+| Training data | mini 1D | mini 2D | mini 3D | tiny 1D | tiny 2D | tiny 3D |
 |---|---|---|---|---|---|---|
-| one dimension only | 0.126 | 0.140 | 0.549 | 0.206 | 0.179 | 0.578 |
-| 1D+2D+3D | 0.143 | 0.148 | 0.547 | 0.210 | 0.197 | 0.576 |
+| Single dimension | 0.126 | 0.140 | 0.549 | 0.206 | 0.179 | 0.578 |
+| 1D + 2D + 3D | 0.143 | 0.148 | 0.547 | 0.210 | 0.197 | 0.576 |
 | 3D only, 25% of the 3D data | | | 0.667 | | | 0.602 |
-| 1D+2D+3D, 25% of the 3D data | | | **0.557** | | | 0.588 |
+| 1D + 2D + 3D, 25% of the 3D data | | | **0.557** | | | 0.588 |
 
-- **With plenty of data, sharing costs a little.** 1D and 2D lose 2-14%, 3D is unchanged: at these sizes the dimensions compete for capacity.
-- **With scarce data, the other dimensions help a lot.** With a quarter of the 3D trajectories, joint training cuts the 3D error of `mini` by 17%, close to `mini` trained on all 3D data (0.549). Both seeds agree (0.556, 0.557).
-- **The bigger the model, the larger the gain.** `tiny` barely overfits the smaller 3D set (0.578 to 0.602) and gains 2%; `mini` overfits more (0.549 to 0.667) and gains 17%.
+When training data are plentiful, joint training increases the one- and two-dimensional errors by 2-14% and leaves the three-dimensional error unchanged, which suggests that the dimensions compete for model capacity at these sizes.
 
-So the value of one model for all dimensions lies in carrying problems with little data, which is the usual case for a new 3D problem. Raw numbers: `results/crossdim.json`; analysis: `scripts/analyze_crossdim.py`.
+When three-dimensional data are scarce, joint training is clearly beneficial. With a quarter of the three-dimensional trajectories, it reduces the three-dimensional error of `mini` by 17%, close to the error obtained with all three-dimensional data (0.549); both seeds agree (0.556 and 0.557).
 
+The benefit grows with model size. The smaller model `tiny` overfits the reduced three-dimensional set only slightly (from 0.578 to 0.602) and gains 2%, whereas `mini` overfits more strongly (from 0.549 to 0.667) and gains 17%. The value of a single model for all dimensions thus lies mainly in problems with limited data, which is the typical situation for a new three-dimensional problem. The raw numbers are in `results/crossdim.json` and the analysis script is `scripts/analyze_crossdim.py`.
 
 ## Frame spacing
 
-OmniArch is never told the time step; it reads it from how much the given frames change. The v0.2 checkpoints only saw one spacing per dataset, and on compressible flow they fail when frames are 3-4x further apart. Training with a random spacing of 1-4 frames fixes this. Ratio of model error to copying the last frame, mean over 8 families (4 given frames, 4 steps; lower is better):
+OmniArch does not receive the time step as an input; it infers the step from the change between consecutive given frames. The v0.2 checkpoints were trained with a single frame spacing per dataset, and on compressible flow their forecasts deteriorate when the frames are three to four times further apart than in training. Sampling the frame spacing uniformly between one and four during training removes this deficiency. The table reports the ratio of the model error to the error of copying the last frame, averaged over eight families, for four given frames and four forecast steps; lower values are better.
 
-| Training | spacing 1x | 2x | 3x | 4x |
+| Training | Spacing 1× | 2× | 3× | 4× |
 |---|---|---|---|---|
-| fixed spacing (as v0.2) | 0.50 | 0.60 | 0.71 | 0.87, worse than copying on 1D and 2D compressible flow |
-| random spacing 1-4 (`omniarch-mini-anystep`) | 0.52 | **0.33** | **0.30** | **0.33** |
+| Fixed spacing (as in v0.2) | 0.50 | 0.60 | 0.71 | 0.87 |
+| Random spacing between 1 and 4 | 0.52 | **0.33** | **0.30** | **0.33** |
 
-Telling the model the spacing explicitly gave the same numbers, so reading it from the context is enough. Raw numbers: `results/anystep.json`; train with `--max_stride 4`, evaluate with `scripts/eval_stride.py`.
+With fixed spacing, the forecasts of one- and two-dimensional compressible flow at four times the training spacing are worse than copying the last frame; with random spacing, no family falls below this reference. Providing the spacing explicitly as an input yields the same numbers, so that inferring it from the context is sufficient. At an equal number of training steps, random spacing increases the error on the standard benchmark by 13% (`mini`, 0.204 against 0.180). This property will be incorporated into future `base` checkpoints. Training uses `--max_stride 4`, evaluation uses `scripts/eval_stride.py`, and the raw numbers are in `results/anystep.json`.

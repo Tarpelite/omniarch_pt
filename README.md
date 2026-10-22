@@ -2,7 +2,7 @@
 
 <h1 align="center">OmniArch-pt (智算天璇)</h1>
 
-<p align="center">One set of weights forecasts 1D, 2D and 3D PDEs. PyTorch rewrite of the ICML 2025 OmniArch model.</p>
+<p align="center">A foundation model for forecasting 1D, 2D and 3D partial differential equations with a single set of weights</p>
 
 <p align="center">
   <a href="https://arxiv.org/abs/2402.16014"><img src="https://img.shields.io/badge/arXiv-2402.16014-b31b1b.svg" alt="arXiv"></a>
@@ -10,23 +10,23 @@
   <a href="https://github.com/Tarpelite/omniarch_pt/stargazers"><img src="https://img.shields.io/github/stars/Tarpelite/omniarch_pt?style=social" alt="GitHub stars"></a>
 </p>
 
-A PyTorch re-implementation of **OmniArch**, a foundation model that forecasts 1D, 2D and 3D PDEs with one set of weights. Give it the first few frames of a simulation; it rolls the solution forward on its own.
+OmniArch-pt is a PyTorch implementation of OmniArch, a foundation model for scientific computing that forecasts the evolution of one-, two- and three-dimensional partial differential equations with a single set of weights. Given the leading frames of a simulation, the model predicts the subsequent frames autoregressively.
 
-> **Preview release (v0.3).** The checkpoints here are models retrained from scratch on a subsampled PDEBench. They are meant for deployment and demos, not as a reproduction of the paper's model or numbers. We release new results and checkpoints as they come, usually daily.
+> **Preview release (v0.3).** The released checkpoints were trained from scratch on a subsampled version of PDEBench. They are intended for deployment and demonstration and do not reproduce the model or the results of the original paper. New results and checkpoints are published regularly.
 
 ## News
 
-- **2026-10-22, v0.3.** Joint 1D+2D+3D training cuts the 3D error by 17% when 3D data is scarce ([study](docs/studies.md#cross-dimension-training)). New `omniarch-mini-anystep` checkpoint for data with a different frame spacing ([study](docs/studies.md#frame-spacing)). Training 1.5x faster per job ([details](docs/training.md#speed)).
-- **2026-10-22, v0.2.** Public release: `base`, `mini` and `tiny` checkpoints from a 36-run [scaling study](docs/studies.md#scaling), web demo, HTTP API.
-- **2026-10-21, v0.1.** First PyTorch rewrite with a command line tool and web demo.
+- **2026-10-22, v0.3.** Studies of joint training across spatial dimensions and of robustness to the frame spacing; faster training ([studies](docs/studies.md), [training](docs/training.md#training-speed)).
+- **2026-10-22, v0.2.** Public release of the `base`, `mini` and `tiny` checkpoints together with a scaling study, a web demonstration and an HTTP interface.
+- **2026-10-21, v0.1.** Initial PyTorch implementation with a command-line tool.
 
-## How it works
+## Method
 
 ![OmniArch architecture](docs/architecture.png)
 
-<sub>Architecture figure from the ICML 2025 paper.</sub>
+<sub>Architecture of OmniArch, reproduced from the ICML 2025 paper.</sub>
 
-Every physical field at every time step becomes one token. A Fourier encoder per dimension (1D, 2D, 3D) turns a field into a token; a shared transformer, causal in time, predicts the next tokens; a Fourier decoder turns them back into fields. Fields are told apart by their order, not their names, so one model takes any mix of physical quantities and grid sizes.
+Each physical field at each time step is represented by one token. A Fourier encoder for each spatial dimension maps a field to a token, a shared Transformer with temporally causal attention predicts the tokens of the next time step, and a Fourier decoder maps them back to fields. Physical quantities are identified by their order rather than by name, so that a single model accepts arbitrary combinations of quantities and grid sizes.
 
 ## Quick start
 
@@ -35,72 +35,50 @@ git clone https://github.com/Tarpelite/omniarch_pt.git && cd omniarch_pt
 python -m venv .venv && source .venv/bin/activate       # Windows: .venv\Scripts\activate
 pip install torch --index-url https://download.pytorch.org/whl/cpu   # or the CUDA build for your GPU
 pip install -e .
-# download a checkpoint into ./weights/ (see Weights below)
+# place a checkpoint in ./weights/ (see Checkpoints)
 
-omniarch info                      # model, device, supported quantities
-omniarch examples                  # bundled cases
+omniarch info                      # model, device and supported quantities
 omniarch predict 2d_turbulence --gif turb.gif
-omniarch serve                     # web demo at http://127.0.0.1:7860
+omniarch serve                     # web demonstration at http://127.0.0.1:7860
 ```
 
 ```python
 from omniarch import OmniArchPredictor
 p = OmniArchPredictor("weights/omniarch-base.pt")
-future = p.predict(history, steps=10)      # history: (K, C, *grid), K >= 4 frames recommended
+future = p.predict(history, steps=10)      # history: (K, C, *grid); K >= 4 frames is recommended
 ```
 
-More in [docs/usage.md](docs/usage.md).
+The Python and HTTP interfaces and the input format are described in [docs/usage.md](docs/usage.md).
 
-## Weights
+## Checkpoints
 
-Default checkpoints (from v0.2):
+| Checkpoint | Parameters | Training | Mean nRMSE | Download (BUAA Pan, valid until 2027-10-22) |
+|---|---|---|---|---|
+| `omniarch-base.pt` (1.2 GB) | 308 M | 36k steps | 0.159 | https://bhpan.buaa.edu.cn/link/AA645380522EB54391B3A496443C6CD709 |
+| `omniarch-mini.pt` (293 MB) | 77 M | 72k steps | 0.168 | https://bhpan.buaa.edu.cn/link/AA00790700453A44E893F3130C7DD2B618 |
+| `omniarch-tiny.pt` (54 MB) | 14 M | 108k steps | 0.212 | https://bhpan.buaa.edu.cn/link/AA5516D6EE8EF74748AD809475482F5340 |
 
-| Checkpoint | Params | Training | Download (BUAA Pan, valid until 2027-10-22) |
-|---|---|---|---|
-| `omniarch-base.pt` (1.2 GB) | 308 M | 36k steps | https://bhpan.buaa.edu.cn/link/AA645380522EB54391B3A496443C6CD709 |
-| `omniarch-mini.pt` (293 MB) | 77 M | 72k steps | https://bhpan.buaa.edu.cn/link/AA00790700453A44E893F3130C7DD2B618 |
-| `omniarch-tiny.pt` (54 MB) | 14 M | 108k steps | https://bhpan.buaa.edu.cn/link/AA5516D6EE8EF74748AD809475482F5340 |
-
-v0.3 adds one checkpoint for data whose frame spacing differs from training or is unknown:
-
-| Checkpoint | Params | Training | Download (BUAA Pan, valid until 2027-10-22) |
-|---|---|---|---|
-| `omniarch-mini-anystep.pt` (293 MB) | 77 M | 36k steps, frame spacing 1-4 | https://bhpan.buaa.edu.cn/link/AAE32DDE73BDBF4EB19B5066189F1AA90A |
-
-Load it with `--ckpt weights/omniarch-mini-anystep.pt` (CLI) or `OmniArchPredictor("weights/omniarch-mini-anystep.pt")`. On the standard benchmark it is 13% behind a regular `mini` trained for the same 36k steps (0.204 vs 0.180); see [Frame spacing](docs/studies.md#frame-spacing) for what it buys.
-
-`omniarch` looks for `weights/omniarch-base.pt`, then `-mini`, then `-tiny`. v0.1 checkpoints (mini 0.179, tiny 0.243) remain available: [mini](https://bhpan.buaa.edu.cn/link/AAA0212103021B4601B97DA21AE1A37922), [tiny](https://bhpan.buaa.edu.cn/link/AA4BD26995FE344D5EA1622A3F6ECECC6F) (valid until 2027-01-01).
-
-## Results at a glance
-
-PDEBench protocol: 10 given frames, roll out to the end of the trajectory, nRMSE over all forecast frames (lower is better), mean over 9 PDE families in 1D, 2D and 3D.
-
-| OmniArch base | OmniArch mini | OmniArch tiny | Copy last frame |
-|---|---|---|---|
-| **0.159** | 0.168 | 0.212 | 0.459 |
-
-Per-family numbers and zero-shot cases: [docs/results.md](docs/results.md).
+Mean nRMSE follows the PDEBench protocol (ten given frames, autoregressive rollout to the end of each trajectory, mean over nine PDE families; lower is better). Copying the last given frame yields 0.459. Without `--ckpt`, the tool loads `weights/omniarch-base.pt`, then `-mini`, then `-tiny`. Per-family results and zero-shot cases are listed in [docs/results.md](docs/results.md).
 
 ## Roadmap
 
-New results and checkpoints are released as they come, usually daily.
-
-- [x] PyTorch rewrite, CLI, web demo, HTTP API (v0.1)
-- [x] `base`, `mini`, `tiny` checkpoints and scaling study (v0.2)
-- [x] Cross-dimension study, frame-spacing-robust checkpoint, faster training (v0.3)
-- [ ] Larger checkpoints, towards about 1B parameters
-- [ ] More training data beyond PDEBench
-- [ ] Higher-resolution grids
-- [ ] Problems beyond periodic boxes
-- [ ] Better zero-shot use on new problems
+- [x] PyTorch implementation, command-line tool, web demonstration and HTTP interface (v0.1)
+- [x] `base`, `mini` and `tiny` checkpoints; scaling study (v0.2)
+- [x] Studies of joint training across dimensions and of frame-spacing robustness; faster training (v0.3)
+- [ ] Robustness to the frame spacing in the `base` checkpoint
+- [ ] Larger checkpoints, towards approximately one billion parameters
+- [ ] Training data beyond PDEBench
+- [ ] Higher spatial resolution
+- [ ] Domains other than periodic boxes
+- [ ] Improved zero-shot performance on unseen problems
 
 ## Documentation
 
-- [Usage](docs/usage.md): Python and HTTP APIs, your own data, how many frames to give
-- [Results](docs/results.md): per-family benchmark and zero-shot cases
-- [Studies](docs/studies.md): scaling, cross-dimension training, frame spacing
-- [Training](docs/training.md): data preparation, training, speed, code layout
-- [部署与使用指南](docs/deploy_guide.md) (Chinese deployment guide)
+- [Usage](docs/usage.md): interfaces, input format and the number of given frames
+- [Results](docs/results.md): per-family benchmark results and zero-shot cases
+- [Studies](docs/studies.md): scaling, joint training across dimensions and frame spacing
+- [Training](docs/training.md): data preparation, training and training speed
+- [部署与使用指南](docs/deploy_guide.md): deployment guide (in Chinese)
 
 ## Citation
 
@@ -113,13 +91,13 @@ New results and checkpoints are released as they come, usually daily.
 }
 ```
 
-Data: PDEBench (Takamoto et al., NeurIPS 2022 Datasets and Benchmarks), CC BY 4.0.
+The training and evaluation data are taken from PDEBench (Takamoto et al., NeurIPS 2022 Datasets and Benchmarks Track), released under CC BY 4.0.
 
 ## Contact
 
-Tianyu Chen, tianyuc@buaa.edu.cn. Questions, bug reports and collaboration are welcome; GitHub issues work too.
+Tianyu Chen (tianyuc@buaa.edu.cn). Questions and collaboration proposals are welcome by e-mail or through GitHub issues.
 
-Part of [CNAI4S](https://cnai4s.com) (人工智能科学计算共性平台).
+This project is part of [CNAI4S](https://cnai4s.com) (人工智能科学计算共性平台).
 
 ## Star history
 
@@ -127,4 +105,4 @@ Part of [CNAI4S](https://cnai4s.com) (人工智能科学计算共性平台).
 
 ## License
 
-Code: MIT. Bundled example cases are derived from PDEBench (CC BY 4.0). The architecture figure is from the OmniArch paper.
+The code is released under the MIT License. The bundled example cases are derived from PDEBench (CC BY 4.0). The architecture figure is reproduced from the OmniArch paper.
