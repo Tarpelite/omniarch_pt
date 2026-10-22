@@ -12,9 +12,9 @@
 
 OmniArch-pt is a PyTorch implementation of OmniArch, a foundation model for scientific computing that solves one-, two- and three-dimensional partial differential equations with a single set of weights. Given the leading frames of a simulation, the model predicts the subsequent frames autoregressively.
 
-<p align="center"><img src="docs/media/forecast.gif" alt="Forecasts of OmniArch base against ground truth" width="560"></p>
+<p align="center"><img src="docs/media/forecast.gif" alt="Forecasts of OmniArch base against ground truth" width="720"></p>
 
-<p align="center"><sub>Ten given frames, then eleven forecast steps by the same <code>base</code> checkpoint. Top: ground truth; bottom: OmniArch.</sub></p>
+<p align="center"><sub>Test trajectories from PDEBench: ten given frames, then eleven forecast steps by the same <code>base</code> checkpoint (v0.4). Top: ground truth; bottom: OmniArch.</sub></p>
 
 > **Preview release (v0.4).** The released checkpoints were trained from scratch on a subsampled version of PDEBench. They are intended for deployment and demonstration and do not reproduce the model or the results of the original paper. New results and checkpoints are published regularly.
 
