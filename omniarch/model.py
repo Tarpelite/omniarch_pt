@@ -59,6 +59,7 @@ PRESETS = {
                            width={1: 8, 2: 8, 3: 4}, modes={1: 16, 2: 12, 3: 8}, decoder_mlp=32),
     "mini": OmniArchConfig(),
     "base": OmniArchConfig(hidden=1024, layers=16, heads=16, ffn=2816),
+    "large": OmniArchConfig(hidden=1536, layers=24, heads=24, ffn=4096),
 }
 
 

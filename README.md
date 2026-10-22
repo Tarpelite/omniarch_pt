@@ -116,6 +116,25 @@ Training: the decoder's point-wise MLP is memory-bound. `omniarch/fused_mlp.py` 
 
 The released checkpoints were trained before the fused kernel existed; all three paths give the same outputs up to floating-point rounding (see `tests/`).
 
+## Scaling
+
+![scaling](docs/scaling.png)
+
+36 training runs on PDEBench (single GPU each; 1D/2D/3D batches 256/64/16 per step), evaluated with the protocol above. Raw numbers in `results/scaling.json`, analysis in `scripts/analyze_scaling.py`.
+
+| Model | Params | 12k steps (3 seeds) | Longer training |
+|---|---|---|---|
+| nano | 4M | 0.322 ± 0.002 | 0.257 at 108k |
+| tiny | 14M | 0.271 ± 0.003 | 0.212 at 108k |
+| mini | 77M | 0.217 ± 0.004 | 0.168 at 72k |
+| base | 308M | 0.187 ± 0.001 | 0.159 at 36k |
+| large | 833M | 0.180 (1 seed) | - |
+
+- **Model size.** At a fixed 12k steps the error follows err ∝ N^-0.11 from 4M to 308M parameters; seed-to-seed spread is 1-2% of the gaps between sizes. The 833M model falls above the trend line: at this budget it is under-trained.
+- **Training length matters more than size at this scale.** base trained 3x longer (0.159) beats large at 12k steps (0.180) for less compute.
+- **Data starts to matter with longer training.** At 12k steps 25% of the training set is as good as 100%; at 36k-108k steps the 25% runs are 5-7% worse.
+- **3D barely moves** (N^-0.03, and little gain from longer training). It is limited by something other than scale, most likely training data (700 trajectories) and the 32³ resolution.
+
 ## Training
 
 ```bash
