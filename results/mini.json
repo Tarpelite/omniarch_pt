@@ -4,487 +4,487 @@
    "family": "adv",
    "dim": 1,
    "n": 50,
-   "omniarch": 0.34349361062049866,
+   "omniarch": 0.355632483959198,
    "copy_last": 0.8697335124015808,
-   "seconds": 0.847243070602417
+   "seconds": 1.4312455654144287
   },
   "adv_beta0.2": {
    "family": "adv",
    "dim": 1,
    "n": 50,
-   "omniarch": 0.37820884585380554,
+   "omniarch": 0.26197779178619385,
    "copy_last": 0.9862562417984009,
-   "seconds": 0.4060983657836914
+   "seconds": 0.40528082847595215
   },
   "adv_beta0.4": {
    "family": "adv",
    "dim": 1,
    "n": 50,
-   "omniarch": 0.3233356177806854,
+   "omniarch": 0.30810654163360596,
    "copy_last": 1.0399373769760132,
-   "seconds": 0.4105339050292969
+   "seconds": 0.40666961669921875
   },
   "adv_beta0.7": {
    "family": "adv",
    "dim": 1,
    "n": 50,
-   "omniarch": 0.28387776017189026,
+   "omniarch": 0.22689449787139893,
    "copy_last": 1.0058486461639404,
-   "seconds": 0.4056131839752197
+   "seconds": 0.40879130363464355
   },
   "adv_beta1.0": {
    "family": "adv",
    "dim": 1,
    "n": 50,
-   "omniarch": 0.18278607726097107,
+   "omniarch": 0.18429969251155853,
    "copy_last": 1.0297918319702148,
-   "seconds": 0.40570998191833496
+   "seconds": 0.4011824131011963
   },
   "adv_beta2.0": {
    "family": "adv",
    "dim": 1,
    "n": 50,
-   "omniarch": 0.10796134918928146,
+   "omniarch": 0.09808418154716492,
    "copy_last": 1.0210332870483398,
-   "seconds": 0.40587568283081055
+   "seconds": 0.4202291965484619
   },
   "adv_beta4.0": {
    "family": "adv",
    "dim": 1,
    "n": 50,
-   "omniarch": 0.0719715878367424,
+   "omniarch": 0.07204276323318481,
    "copy_last": 1.0191799402236938,
-   "seconds": 0.40541505813598633
+   "seconds": 0.40068697929382324
   },
   "adv_beta7.0": {
    "family": "adv",
    "dim": 1,
    "n": 50,
-   "omniarch": 0.0906984731554985,
+   "omniarch": 0.09005469083786011,
    "copy_last": 1.032446265220642,
-   "seconds": 0.40532946586608887
+   "seconds": 0.4008767604827881
   },
   "burgers_nu0.001": {
    "family": "burgers",
    "dim": 1,
    "n": 50,
-   "omniarch": 0.3950553238391876,
+   "omniarch": 0.29937517642974854,
    "copy_last": 0.6570131182670593,
-   "seconds": 0.4129304885864258
+   "seconds": 0.4264554977416992
   },
   "burgers_nu0.002": {
    "family": "burgers",
    "dim": 1,
    "n": 50,
-   "omniarch": 0.3575055003166199,
+   "omniarch": 0.2897094786167145,
    "copy_last": 0.6453898549079895,
-   "seconds": 0.4064321517944336
+   "seconds": 0.4071824550628662
   },
   "burgers_nu0.004": {
    "family": "burgers",
    "dim": 1,
    "n": 50,
-   "omniarch": 0.30579477548599243,
+   "omniarch": 0.25947633385658264,
    "copy_last": 0.6231427192687988,
-   "seconds": 0.4052901268005371
+   "seconds": 0.4014291763305664
   },
   "burgers_nu0.01": {
    "family": "burgers",
    "dim": 1,
    "n": 50,
-   "omniarch": 0.24316354095935822,
+   "omniarch": 0.22016973793506622,
    "copy_last": 0.5689323544502258,
-   "seconds": 0.4051361083984375
+   "seconds": 0.40821003913879395
   },
   "burgers_nu0.02": {
    "family": "burgers",
    "dim": 1,
    "n": 50,
-   "omniarch": 0.24069473147392273,
+   "omniarch": 0.18232408165931702,
    "copy_last": 0.5116543173789978,
-   "seconds": 0.4059298038482666
+   "seconds": 0.40642571449279785
   },
   "burgers_nu0.04": {
    "family": "burgers",
    "dim": 1,
    "n": 50,
-   "omniarch": 0.1956063210964203,
+   "omniarch": 0.15257202088832855,
    "copy_last": 0.4341324269771576,
-   "seconds": 0.4046752452850342
+   "seconds": 0.4060325622558594
   },
   "burgers_nu0.1": {
    "family": "burgers",
    "dim": 1,
    "n": 50,
-   "omniarch": 0.12523454427719116,
+   "omniarch": 0.14158472418785095,
    "copy_last": 0.294536292552948,
-   "seconds": 0.4062528610229492
+   "seconds": 0.41229796409606934
   },
   "burgers_nu0.2": {
    "family": "burgers",
    "dim": 1,
    "n": 50,
-   "omniarch": 0.08358903974294662,
+   "omniarch": 0.11452419310808182,
    "copy_last": 0.19993141293525696,
-   "seconds": 0.40558695793151855
+   "seconds": 0.4075000286102295
   },
   "burgers_nu0.4": {
    "family": "burgers",
    "dim": 1,
    "n": 50,
-   "omniarch": 0.048965420573949814,
+   "omniarch": 0.05527264624834061,
    "copy_last": 0.08754635602235794,
-   "seconds": 0.4058535099029541
+   "seconds": 0.4057025909423828
   },
   "burgers_nu1.0": {
    "family": "burgers",
    "dim": 1,
    "n": 50,
-   "omniarch": 0.012352189049124718,
+   "omniarch": 0.01045624352991581,
    "copy_last": 0.0022369471844285727,
-   "seconds": 0.40560126304626465
+   "seconds": 0.40689778327941895
   },
   "burgers_nu2.0": {
    "family": "burgers",
    "dim": 1,
    "n": 50,
-   "omniarch": 0.00977710448205471,
+   "omniarch": 0.00953315757215023,
    "copy_last": 0.0,
-   "seconds": 0.4053363800048828
+   "seconds": 0.4044017791748047
   },
   "burgers_nu4.0": {
    "family": "burgers",
    "dim": 1,
    "n": 50,
-   "omniarch": 0.006556146778166294,
+   "omniarch": 0.009132697246968746,
    "copy_last": 0.0,
-   "seconds": 0.40564990043640137
+   "seconds": 0.40514039993286133
   },
   "cfd1d_rand_eta0.01": {
    "family": "cfd1d",
    "dim": 1,
    "n": 50,
-   "omniarch": 0.1327114850282669,
+   "omniarch": 0.10683709383010864,
    "copy_last": 0.48830750584602356,
-   "seconds": 0.15462517738342285
+   "seconds": 0.15069293975830078
   },
   "cfd1d_rand_eta0.1": {
    "family": "cfd1d",
    "dim": 1,
    "n": 50,
-   "omniarch": 0.0646669864654541,
+   "omniarch": 0.05367607623338699,
    "copy_last": 0.3573191463947296,
-   "seconds": 0.1498854160308838
+   "seconds": 0.14977455139160156
   },
   "cfd1d_rand_eta1e-8": {
    "family": "cfd1d",
    "dim": 1,
    "n": 50,
-   "omniarch": 0.1904643028974533,
+   "omniarch": 0.16033856570720673,
    "copy_last": 0.520476758480072,
-   "seconds": 0.15120744705200195
+   "seconds": 0.15178728103637695
   },
   "cfd1d_rand_trans": {
    "family": "cfd1d",
    "dim": 1,
    "n": 50,
-   "omniarch": 0.3962264358997345,
+   "omniarch": 0.3305422067642212,
    "copy_last": 0.5929040312767029,
-   "seconds": 0.1511702537536621
+   "seconds": 0.14509081840515137
   },
   "cfd1d_shock_trans": {
    "family": "cfd1d",
    "dim": 1,
    "n": 50,
-   "omniarch": 0.09070190787315369,
+   "omniarch": 0.07905998826026917,
    "copy_last": 0.30395010113716125,
-   "seconds": 0.1512136459350586
+   "seconds": 0.14697027206420898
   },
   "cfd2d_rand_m0.1_eta0.01": {
    "family": "cfd2d",
    "dim": 2,
    "n": 100,
-   "omniarch": 0.13200116157531738,
+   "omniarch": 0.11871331930160522,
    "copy_last": 0.7153393030166626,
-   "seconds": 0.9655985832214355
+   "seconds": 0.7988970279693604
   },
   "cfd2d_rand_m0.1_eta0.1": {
    "family": "cfd2d",
    "dim": 2,
    "n": 100,
-   "omniarch": 0.20144182443618774,
+   "omniarch": 0.18329089879989624,
    "copy_last": 0.6373792886734009,
-   "seconds": 0.9683475494384766
+   "seconds": 0.7351174354553223
   },
   "cfd2d_rand_m0.1_eta1e-8": {
    "family": "cfd2d",
    "dim": 2,
    "n": 30,
-   "omniarch": 0.3273565173149109,
+   "omniarch": 0.3054802715778351,
    "copy_last": 0.5477149486541748,
-   "seconds": 0.5358107089996338
+   "seconds": 0.27761030197143555
   },
   "cfd2d_rand_m1.0_eta0.01": {
    "family": "cfd2d",
    "dim": 2,
    "n": 100,
-   "omniarch": 0.17659921944141388,
+   "omniarch": 0.17312034964561462,
    "copy_last": 0.671072244644165,
-   "seconds": 0.9456746578216553
+   "seconds": 0.7333893775939941
   },
   "cfd2d_rand_m1.0_eta0.1": {
    "family": "cfd2d",
    "dim": 2,
    "n": 100,
-   "omniarch": 0.24688810110092163,
+   "omniarch": 0.19217762351036072,
    "copy_last": 0.5754743814468384,
-   "seconds": 0.9485011100769043
+   "seconds": 0.7404406070709229
   },
   "cfd2d_rand_m1.0_eta1e-8": {
    "family": "cfd2d",
    "dim": 2,
    "n": 30,
-   "omniarch": 0.39130261540412903,
+   "omniarch": 0.38125044107437134,
    "copy_last": 0.7150604724884033,
-   "seconds": 0.31940650939941406
+   "seconds": 0.21486163139343262
   },
   "cfd2d_turb_m0.1": {
    "family": "cfd2d",
    "dim": 2,
    "n": 30,
-   "omniarch": 0.2728942930698395,
+   "omniarch": 0.265493780374527,
    "copy_last": 0.5338821411132812,
-   "seconds": 0.327648401260376
+   "seconds": 0.22231507301330566
   },
   "cfd2d_turb_m1.0": {
    "family": "cfd2d",
    "dim": 2,
    "n": 30,
-   "omniarch": 0.4004974961280823,
+   "omniarch": 0.3810526430606842,
    "copy_last": 0.7880458235740662,
-   "seconds": 0.320772647857666
+   "seconds": 0.23874688148498535
   },
   "cfd3d_rand": {
    "family": "cfd3d",
    "dim": 3,
    "n": 10,
-   "omniarch": 0.5373791456222534,
+   "omniarch": 0.526460587978363,
    "copy_last": 0.9009124636650085,
-   "seconds": 0.9247045516967773
+   "seconds": 0.7069864273071289
   },
   "cfd3d_turb": {
    "family": "cfd3d",
    "dim": 3,
    "n": 30,
-   "omniarch": 0.5465475916862488,
+   "omniarch": 0.5439432859420776,
    "copy_last": 0.8704410791397095,
-   "seconds": 2.5438075065612793
+   "seconds": 1.8634793758392334
   },
   "diffreact2d": {
    "family": "diffreact2d",
    "dim": 2,
    "n": 100,
-   "omniarch": 0.1627076119184494,
+   "omniarch": 0.15601766109466553,
    "copy_last": 0.49552014470100403,
-   "seconds": 0.631397008895874
+   "seconds": 0.5656828880310059
   },
   "diffsorp": {
    "family": "diffsorp",
    "dim": 1,
    "n": 100,
-   "omniarch": 0.023186810314655304,
+   "omniarch": 0.03222218155860901,
    "copy_last": 0.15688219666481018,
-   "seconds": 0.29514312744140625
+   "seconds": 0.29987597465515137
   },
   "reacdiff_nu0.5_rho1.0": {
    "family": "reacdiff",
    "dim": 1,
    "n": 25,
-   "omniarch": 0.002205012133345008,
+   "omniarch": 0.0020161534193903208,
    "copy_last": 0.0007416949956677854,
-   "seconds": 0.0743722915649414
+   "seconds": 0.07232785224914551
   },
   "reacdiff_nu0.5_rho10.0": {
    "family": "reacdiff",
    "dim": 1,
    "n": 25,
-   "omniarch": 0.0016194283962249756,
+   "omniarch": 0.0028254794888198376,
    "copy_last": 0.0,
-   "seconds": 0.07442903518676758
+   "seconds": 0.07138514518737793
   },
   "reacdiff_nu0.5_rho2.0": {
    "family": "reacdiff",
    "dim": 1,
    "n": 25,
-   "omniarch": 0.055803731083869934,
+   "omniarch": 0.04591260477900505,
    "copy_last": 0.045537639409303665,
-   "seconds": 0.07459068298339844
+   "seconds": 0.0815434455871582
   },
   "reacdiff_nu0.5_rho5.0": {
    "family": "reacdiff",
    "dim": 1,
    "n": 25,
-   "omniarch": 0.028169777244329453,
+   "omniarch": 0.028690125793218613,
    "copy_last": 0.02799140475690365,
-   "seconds": 0.07436442375183105
+   "seconds": 0.07935667037963867
   },
   "reacdiff_nu1.0_rho1.0": {
    "family": "reacdiff",
    "dim": 1,
    "n": 25,
-   "omniarch": 0.10843878984451294,
+   "omniarch": 0.10657189041376114,
    "copy_last": 0.1082243025302887,
-   "seconds": 0.07434463500976562
+   "seconds": 0.07390236854553223
   },
   "reacdiff_nu1.0_rho10.0": {
    "family": "reacdiff",
    "dim": 1,
    "n": 25,
-   "omniarch": 0.002325985115021467,
+   "omniarch": 0.00395556353032589,
    "copy_last": 0.000985988648608327,
-   "seconds": 0.0743708610534668
+   "seconds": 0.07230901718139648
   },
   "reacdiff_nu1.0_rho2.0": {
    "family": "reacdiff",
    "dim": 1,
    "n": 25,
-   "omniarch": 0.15614084899425507,
+   "omniarch": 0.14638185501098633,
    "copy_last": 0.14628025889396667,
-   "seconds": 0.07466888427734375
+   "seconds": 0.07577013969421387
   },
   "reacdiff_nu1.0_rho5.0": {
    "family": "reacdiff",
    "dim": 1,
    "n": 25,
-   "omniarch": 0.06672284007072449,
+   "omniarch": 0.06724421679973602,
    "copy_last": 0.06658384948968887,
-   "seconds": 0.07447075843811035
+   "seconds": 0.07219409942626953
   },
   "reacdiff_nu2.0_rho1.0": {
    "family": "reacdiff",
    "dim": 1,
    "n": 25,
-   "omniarch": 0.0020055407658219337,
+   "omniarch": 0.0019636533688753843,
    "copy_last": 0.00016961467918008566,
-   "seconds": 0.07451725006103516
+   "seconds": 0.07217884063720703
   },
   "reacdiff_nu2.0_rho10.0": {
    "family": "reacdiff",
    "dim": 1,
    "n": 25,
-   "omniarch": 0.0015277224592864513,
+   "omniarch": 0.0030043271835893393,
    "copy_last": 0.0,
-   "seconds": 0.0744009017944336
+   "seconds": 0.07208728790283203
   },
   "reacdiff_nu2.0_rho2.0": {
    "family": "reacdiff",
    "dim": 1,
    "n": 25,
-   "omniarch": 0.05516784265637398,
+   "omniarch": 0.04517494514584541,
    "copy_last": 0.04454087093472481,
-   "seconds": 0.07438445091247559
+   "seconds": 0.07213044166564941
   },
   "reacdiff_nu2.0_rho5.0": {
    "family": "reacdiff",
    "dim": 1,
    "n": 25,
-   "omniarch": 0.027025187388062477,
+   "omniarch": 0.02764875628054142,
    "copy_last": 0.0266744252294302,
-   "seconds": 0.07421731948852539
+   "seconds": 0.07241177558898926
   },
   "reacdiff_nu5.0_rho1.0": {
    "family": "reacdiff",
    "dim": 1,
    "n": 25,
-   "omniarch": 0.022824542596936226,
+   "omniarch": 0.022189205512404442,
    "copy_last": 0.022743018344044685,
-   "seconds": 0.07439112663269043
+   "seconds": 0.07257890701293945
   },
   "reacdiff_nu5.0_rho10.0": {
    "family": "reacdiff",
    "dim": 1,
    "n": 25,
-   "omniarch": 0.0016131740994751453,
+   "omniarch": 0.0032073697075247765,
    "copy_last": 0.00019605971465352923,
-   "seconds": 0.07439136505126953
+   "seconds": 0.07231426239013672
   },
   "reacdiff_nu5.0_rho2.0": {
    "family": "reacdiff",
    "dim": 1,
    "n": 25,
-   "omniarch": 0.15131942927837372,
+   "omniarch": 0.14164796471595764,
    "copy_last": 0.14144492149353027,
-   "seconds": 0.07434248924255371
+   "seconds": 0.07231855392456055
   },
   "reacdiff_nu5.0_rho5.0": {
    "family": "reacdiff",
    "dim": 1,
    "n": 25,
-   "omniarch": 0.04690147563815117,
+   "omniarch": 0.04738912731409073,
    "copy_last": 0.04670931398868561,
-   "seconds": 0.0743556022644043
+   "seconds": 0.07232165336608887
   },
   "swe2d": {
    "family": "swe2d",
    "dim": 2,
    "n": 100,
-   "omniarch": 0.003790132701396942,
+   "omniarch": 0.003584848949685693,
    "copy_last": 0.11010821163654327,
-   "seconds": 0.4243652820587158
+   "seconds": 0.35113525390625
   }
  },
  "per_family": {
   "adv": {
    "dim": 1,
-   "omniarch": 0.22279166523367167,
+   "omniarch": 0.19963658042252064,
    "copy_last": 1.0005283877253532,
    "files": 8
   },
   "burgers": {
    "dim": 1,
-   "omniarch": 0.16869121983957788,
+   "omniarch": 0.1453442076065888,
    "copy_last": 0.3353763166621017,
    "files": 12
   },
   "cfd1d": {
    "dim": 1,
-   "omniarch": 0.1749542236328125,
+   "omniarch": 0.14609078615903853,
    "copy_last": 0.45259150862693787,
    "files": 5
   },
   "cfd2d": {
    "dim": 2,
-   "omniarch": 0.2686226535588503,
+   "omniarch": 0.2500724159181118,
    "copy_last": 0.647996075451374,
    "files": 8
   },
   "cfd3d": {
    "dim": 3,
-   "omniarch": 0.5419633686542511,
+   "omniarch": 0.5352019369602203,
    "copy_last": 0.885676771402359,
    "files": 2
   },
   "diffreact2d": {
    "dim": 2,
-   "omniarch": 0.1627076119184494,
+   "omniarch": 0.15601766109466553,
    "copy_last": 0.49552014470100403,
    "files": 1
   },
   "diffsorp": {
    "dim": 1,
-   "omniarch": 0.023186810314655304,
+   "omniarch": 0.03222218155860901,
    "copy_last": 0.15688219666481018,
    "files": 1
   },
   "reacdiff": {
    "dim": 1,
-   "omniarch": 0.04561320798529778,
+   "omniarch": 0.04348895240400452,
    "copy_last": 0.042426460194292304,
    "files": 16
   },
   "swe2d": {
    "dim": 2,
-   "omniarch": 0.003790132701396942,
+   "omniarch": 0.003584848949685693,
    "copy_last": 0.11010821163654327,
    "files": 1
   }

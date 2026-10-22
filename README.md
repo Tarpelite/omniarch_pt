@@ -2,15 +2,16 @@
 
 A PyTorch re-implementation of **OmniArch**, a foundation model that forecasts 1D, 2D and 3D PDEs with one set of weights. Give it the first few frames of a simulation; it rolls the solution forward on its own.
 
-> **Preview release (v0.1).** The checkpoints here are small models retrained from scratch on a subsampled PDEBench. They are meant for deployment and demos, not as a reproduction of the paper's model or numbers.
+> **Preview release (v0.2).** The checkpoints here are models retrained from scratch on a subsampled PDEBench. They are meant for deployment and demos, not as a reproduction of the paper's model or numbers.
 
-The original code was MindSpore on Ascend; this repository is a fresh PyTorch rewrite with two small checkpoints, `mini` and `tiny`. It follows the architecture of the ICML 2025 paper ([arXiv:2402.16014](https://arxiv.org/abs/2402.16014)) but is trained from scratch at a much smaller scale, so numbers differ from the paper.
+The original code was MindSpore on Ascend; this repository is a fresh PyTorch rewrite with three checkpoints, `base`, `mini` and `tiny`. It follows the architecture of the ICML 2025 paper ([arXiv:2402.16014](https://arxiv.org/abs/2402.16014)) but is trained from scratch at a much smaller scale, so numbers differ from the paper.
 
-| | OmniArch mini | OmniArch tiny |
-|---|---|---|
-| Parameters | 77 M | 14 M |
-| Runs on | any CUDA GPU, Apple MPS, or CPU | CPU friendly |
-| Trained on | PDEBench, 11 PDE families, 1D/2D/3D | same |
+| | OmniArch base | OmniArch mini | OmniArch tiny |
+|---|---|---|---|
+| Parameters | 308 M | 77 M | 14 M |
+| Mean nRMSE (lower is better) | 0.159 | 0.168 | 0.212 |
+| Runs on | CUDA GPU, Apple MPS, or CPU | same | CPU friendly |
+| Trained on | PDEBench, 11 PDE families, 1D/2D/3D | same | same |
 
 ## How it works
 
@@ -47,7 +48,7 @@ Python API:
 
 ```python
 from omniarch import OmniArchPredictor
-p = OmniArchPredictor("weights/omniarch-mini.pt")          # device picked automatically
+p = OmniArchPredictor("weights/omniarch-base.pt")          # device picked automatically
 future = p.predict(history, steps=10)
 # history: float array (K, C, *grid), K >= 1 given frames, C <= 8 fields; returns (steps, C, *grid)
 ```
@@ -56,10 +57,15 @@ Fields need no names, but their order matters: keep the order used in training f
 
 ### Weights
 
-| Checkpoint | Params | Download (BUAA Pan, valid until 2027-01-01) |
-|---|---|---|
-| `omniarch-mini.pt` (293 MB) | 77 M | https://bhpan.buaa.edu.cn/link/AAA0212103021B4601B97DA21AE1A37922 |
-| `omniarch-tiny.pt` (54 MB) | 14 M | https://bhpan.buaa.edu.cn/link/AA4BD26995FE344D5EA1622A3F6ECECC6F |
+v0.2 (current):
+
+| Checkpoint | Params | Training | Download (BUAA Pan) |
+|---|---|---|---|
+| `omniarch-base.pt` (1.2 GB) | 308 M | 36k steps | LINK_BASE |
+| `omniarch-mini.pt` (293 MB) | 77 M | 72k steps | LINK_MINI |
+| `omniarch-tiny.pt` (54 MB) | 14 M | 108k steps | LINK_TINY |
+
+`omniarch` looks for `weights/omniarch-base.pt`, then `-mini`, then `-tiny`. v0.1 checkpoints (mini 0.179, tiny 0.243) remain available: [mini](https://bhpan.buaa.edu.cn/link/AAA0212103021B4601B97DA21AE1A37922), [tiny](https://bhpan.buaa.edu.cn/link/AA4BD26995FE344D5EA1622A3F6ECECC6F) (valid until 2027-01-01).
 
 ### Your own data
 
@@ -77,35 +83,35 @@ Minimum grid: 48 points (1D), 32×32 (2D), 16³ (3D). Periodic boundaries work b
 
 PDEBench protocol: 10 given frames, autoregressive rollout to the end of the trajectory, nRMSE over all forecast frames (lower is better). The reference row copies the last given frame forward.
 
-| PDE family | Dim | OmniArch mini | OmniArch tiny | Copy last frame |
-|---|---|---|---|---|
-| Advection | 1D | 0.223 | 0.509 | 1.001 |
-| Burgers | 1D | 0.169 | 0.182 | 0.335 |
-| Compressible flow | 1D | 0.175 | 0.243 | 0.453 |
-| Diffusion-sorption | 1D | 0.023 | 0.024 | 0.157 |
-| Reaction-diffusion | 1D | 0.046 | 0.043 | 0.042 |
-| Compressible NS | 2D | 0.269 | 0.424 | 0.648 |
-| Diffusion-reaction | 2D | 0.163 | 0.180 | 0.496 |
-| Shallow water | 2D | 0.004 | 0.008 | 0.110 |
-| Compressible NS / turbulence | 3D | 0.542 | 0.577 | 0.886 |
-| **Mean of families** | | **0.179** | **0.243** | **0.459** |
+| PDE family | Dim | OmniArch base | OmniArch mini | OmniArch tiny | Copy last frame |
+|---|---|---|---|---|---|
+| Advection | 1D | 0.170 | 0.200 | 0.354 | 1.001 |
+| Burgers | 1D | 0.146 | 0.145 | 0.172 | 0.335 |
+| Compressible flow | 1D | 0.139 | 0.146 | 0.249 | 0.453 |
+| Diffusion-sorption | 1D | 0.039 | 0.032 | 0.028 | 0.157 |
+| Reaction-diffusion | 1D | 0.043 | 0.043 | 0.047 | 0.042 |
+| Compressible NS | 2D | 0.236 | 0.250 | 0.326 | 0.648 |
+| Diffusion-reaction | 2D | 0.142 | 0.156 | 0.164 | 0.496 |
+| Shallow water | 2D | 0.004 | 0.004 | 0.005 | 0.110 |
+| Compressible NS / turbulence | 3D | 0.518 | 0.535 | 0.565 | 0.886 |
+| **Mean of families** | | **0.159** | **0.168** | **0.212** | **0.459** |
 
-Going from 14M to 77M parameters lowers the mean error by 26%, with `tiny` having seen 20% more training samples, so the gain comes from model size; 3D improves least (6%), consistent with it being data-limited.
+Going from 14M to 308M parameters lowers the mean error by a quarter; see Scaling below for controlled comparisons.
 
 Grids are subsampled from PDEBench: 256 points in 1D, 64×64 in 2D, 32³ in 3D. Numbers are not comparable with the paper, which used a different resolution and protocol. Two honest caveats: reaction-diffusion trajectories flatten out within a few frames, so copying the last frame is already near-perfect and the model is slightly worse; 3D is the weakest family (fewest training trajectories).
 
-**Zero-shot cases** (PDEBench `Test/` problems never seen in training, different grids and time steps; `omniarch-mini`, nRMSE):
+**Zero-shot cases** (PDEBench `Test/` problems never seen in training, different grids and time steps; `omniarch-base`, nRMSE):
 
-| Case | OmniArch mini | Copy last frame |
+| Case | OmniArch base | Copy last frame |
 |---|---|---|
-| 1D Sod shock tube | 0.012 | 0.018 |
-| 2D Orszag–Tang vortex | 0.303 | 0.434 |
-| 2D Kelvin–Helmholtz instability | 0.494 | 0.301 |
-| 3D turbulence, 256³ subsampled to 32³ | 0.621 | 1.003 |
+| 1D Sod shock tube | 0.011 | 0.018 |
+| 2D Orszag–Tang vortex | 0.234 | 0.434 |
+| 2D Kelvin–Helmholtz instability | 0.358 | 0.301 |
+| 3D turbulence, 256³ subsampled to 32³ | 0.623 | 1.003 |
 
 ## Speed
 
-Inference on an 8-core CPU (bundled cases), `mini` / `tiny`: 31 steps of 1D Burgers 0.4 s / 0.1 s, 11 steps of 2D (64×64, 4 fields) 1.2 s / 0.5 s, 11 steps of 3D (32³, 5 fields) 9 s / 4.6 s.
+Inference on an 8-core CPU (bundled cases), `base` / `tiny`: 31 steps of 1D Burgers 1.8 s / 0.1 s, 11 steps of 2D (64×64, 4 fields) 2.2 s / 0.5 s, 11 steps of 3D (32³, 5 fields) 10.5 s / 4.6 s. `mini` is close to `base` on CPU because the decoder, not the transformer, dominates.
 
 Training: the decoder's point-wise MLP is memory-bound. `omniarch/fused_mlp.py` provides a fused Triton kernel (forward and backward, hidden activations stay on chip). Enable it with `OMNIARCH_FUSED=1`; it falls back to PyTorch on CPU, MPS or without Triton. One training step on an RTX PRO 6000 (bf16, 1D/2D/3D batches 256/64/16):
 
@@ -114,7 +120,7 @@ Training: the decoder's point-wise MLP is memory-bound. `omniarch/fused_mlp.py` 
 | mini, step time | 239 ms | 223 ms | 133 ms |
 | mini, peak memory | 21.6 GB | 20.4 GB | 5.8 GB |
 
-The released checkpoints were trained before the fused kernel existed; all three paths give the same outputs up to floating-point rounding (see `tests/`).
+The v0.2 checkpoints were trained with the fused kernel; all three paths give the same outputs up to floating-point rounding (see `tests/`), so any of them can run inference.
 
 ## Scaling
 

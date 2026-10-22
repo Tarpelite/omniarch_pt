@@ -55,6 +55,8 @@ def get_args():
     ap.add_argument("--augment", action="store_true", help="random periodic shifts and mirror images")
     ap.add_argument("--data_frac", type=float, default=1.0, help="fraction of training trajectories per dataset")
     ap.add_argument("--seed", type=int, default=0, help="changes initialisation, noise and data order")
+    ap.add_argument("--dims", default="123", help="spatial dimensions to train on, e.g. 3 or 23 (cross-dimension study)")
+    ap.add_argument("--dim_frac", default="", help="per-dimension data fraction overriding --data_frac, e.g. 3:0.25")
     return ap.parse_args()
 
 
@@ -107,14 +109,17 @@ def main():
         opt, lambda s: min(1, (s + 1) / a.warmup) * (0.05 + 0.95 * 0.5 * (1 + math.cos(math.pi * min(1, s / a.steps)))))
 
     entries = load_entries(a.data)
-    loaders = []
-    for i, d in enumerate((1, 2, 3)):
+    dims = sorted({int(c) for c in a.dims})
+    dim_frac = {int(k): float(v) for k, v in (x.split(":") for x in a.dim_frac.split(",") if x)}
+    loaders = {}
+    for d in dims:
+        i = d - 1
         ds = WindowBatches(entries, d, a.batch[i], a.window[i], seed=rank * 10 + d + 1000 * a.seed,
                            shared_seed=(7 + d + 1000 * a.seed) if a.balanced else None, augment=a.augment,
-                           data_frac=a.data_frac)
-        loaders.append(iter(torch.utils.data.DataLoader(ds, batch_size=None, num_workers=a.workers,
-                                                        pin_memory=True, persistent_workers=True,
-                                                        prefetch_factor=4)))
+                           data_frac=dim_frac.get(d, a.data_frac))
+        loaders[d] = iter(torch.utils.data.DataLoader(ds, batch_size=None, num_workers=a.workers,
+                                                      pin_memory=True, persistent_workers=True,
+                                                      prefetch_factor=4))
     eval_entries = [e for e in entries if e.name in
                     ("adv_beta1.0", "burgers_nu0.01", "reacdiff_nu1.0_rho2.0", "cfd1d_rand_eta0.01", "diffsorp",
                      "swe2d", "diffreact2d", "cfd2d_rand_m0.1_eta0.01", "cfd2d_turb_m1.0", "cfd3d_rand", "cfd3d_turb")]
@@ -134,16 +139,17 @@ def main():
 
     t0 = time.time()
     for step in range(start, a.steps):
-        losses = []
+        losses = [torch.zeros((), device=dev)] * 3
         opt.zero_grad(set_to_none=True)
         # one backward per dimension: peak memory is the largest of the three graphs, not their sum;
         # gradients accumulate locally and are all-reduced once, on the last backward
-        for i in range(3):
-            item = next(loaders[i])
+        for k, d in enumerate(dims):
+            i = d - 1
+            item = next(loaders[d])
             x, types = item[0].to(dev, non_blocking=True), item[1].to(dev, non_blocking=True)
             if len(item) == 3:
                 x = gpu_augment(x, *item[2])
-            ctx = ddp.no_sync() if i < 2 else contextlib.nullcontext()
+            ctx = ddp.no_sync() if k < len(dims) - 1 else contextlib.nullcontext()
             with ctx:
                 with torch.autocast("cuda", torch.bfloat16):
                     pn, (mean, std) = ddp(x[:, :-1], types, noise=cfg.noise)
@@ -151,9 +157,9 @@ def main():
                 l = torch.nn.functional.mse_loss(pn.float(), target)
                 # zero-weight touch of the other dimensions' encoder/decoder so DDP sees a gradient
                 # for every parameter in every backward (they are not part of this graph otherwise)
-                touch = sum(p_.sum() for d_, ps in dim_params.items() if d_ != i + 1 for p_ in ps)
+                touch = sum(p_.sum() for d_, ps in dim_params.items() if d_ != d for p_ in ps)
                 (a.loss_w[i] * l + 0.0 * touch).backward()
-            losses.append(l.detach())
+            losses[i] = l.detach()
             del pn, mean, std, target, l, x
         gn = torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
         opt.step()

@@ -16,7 +16,7 @@ import torch
 
 from .model import MAX_CHANNELS, OmniArch, OmniArchConfig
 
-DEFAULT_CKPT_NAMES = ["omniarch-mini.pt", "omniarch-tiny.pt"]
+DEFAULT_CKPT_NAMES = ["omniarch-base.pt", "omniarch-mini.pt", "omniarch-tiny.pt"]
 
 
 def find_checkpoint(path=None):

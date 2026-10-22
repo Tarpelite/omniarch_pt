@@ -1,0 +1,493 @@
+{
+ "per_file": {
+  "adv_beta0.1": {
+   "family": "adv",
+   "dim": 1,
+   "n": 50,
+   "omniarch": 0.22539587318897247,
+   "copy_last": 0.8697335124015808,
+   "seconds": 1.6388897895812988
+  },
+  "adv_beta0.2": {
+   "family": "adv",
+   "dim": 1,
+   "n": 50,
+   "omniarch": 0.2969852387905121,
+   "copy_last": 0.9862562417984009,
+   "seconds": 0.7154407501220703
+  },
+  "adv_beta0.4": {
+   "family": "adv",
+   "dim": 1,
+   "n": 50,
+   "omniarch": 0.2607372999191284,
+   "copy_last": 1.0399373769760132,
+   "seconds": 0.7158782482147217
+  },
+  "adv_beta0.7": {
+   "family": "adv",
+   "dim": 1,
+   "n": 50,
+   "omniarch": 0.17908498644828796,
+   "copy_last": 1.0058486461639404,
+   "seconds": 0.7195053100585938
+  },
+  "adv_beta1.0": {
+   "family": "adv",
+   "dim": 1,
+   "n": 50,
+   "omniarch": 0.16544902324676514,
+   "copy_last": 1.0297918319702148,
+   "seconds": 0.7163832187652588
+  },
+  "adv_beta2.0": {
+   "family": "adv",
+   "dim": 1,
+   "n": 50,
+   "omniarch": 0.07431966811418533,
+   "copy_last": 1.0210332870483398,
+   "seconds": 0.7190208435058594
+  },
+  "adv_beta4.0": {
+   "family": "adv",
+   "dim": 1,
+   "n": 50,
+   "omniarch": 0.06357747316360474,
+   "copy_last": 1.0191799402236938,
+   "seconds": 0.715228796005249
+  },
+  "adv_beta7.0": {
+   "family": "adv",
+   "dim": 1,
+   "n": 50,
+   "omniarch": 0.09143500030040741,
+   "copy_last": 1.032446265220642,
+   "seconds": 0.719210147857666
+  },
+  "burgers_nu0.001": {
+   "family": "burgers",
+   "dim": 1,
+   "n": 50,
+   "omniarch": 0.3223845958709717,
+   "copy_last": 0.6570131182670593,
+   "seconds": 0.7133235931396484
+  },
+  "burgers_nu0.002": {
+   "family": "burgers",
+   "dim": 1,
+   "n": 50,
+   "omniarch": 0.3039960563182831,
+   "copy_last": 0.6453898549079895,
+   "seconds": 0.718341588973999
+  },
+  "burgers_nu0.004": {
+   "family": "burgers",
+   "dim": 1,
+   "n": 50,
+   "omniarch": 0.273731529712677,
+   "copy_last": 0.6231427192687988,
+   "seconds": 0.7193570137023926
+  },
+  "burgers_nu0.01": {
+   "family": "burgers",
+   "dim": 1,
+   "n": 50,
+   "omniarch": 0.23358412086963654,
+   "copy_last": 0.5689323544502258,
+   "seconds": 0.7155022621154785
+  },
+  "burgers_nu0.02": {
+   "family": "burgers",
+   "dim": 1,
+   "n": 50,
+   "omniarch": 0.2039998173713684,
+   "copy_last": 0.5116543173789978,
+   "seconds": 0.7139530181884766
+  },
+  "burgers_nu0.04": {
+   "family": "burgers",
+   "dim": 1,
+   "n": 50,
+   "omniarch": 0.14930354058742523,
+   "copy_last": 0.4341324269771576,
+   "seconds": 0.7157833576202393
+  },
+  "burgers_nu0.1": {
+   "family": "burgers",
+   "dim": 1,
+   "n": 50,
+   "omniarch": 0.10358686745166779,
+   "copy_last": 0.294536292552948,
+   "seconds": 0.7182762622833252
+  },
+  "burgers_nu0.2": {
+   "family": "burgers",
+   "dim": 1,
+   "n": 50,
+   "omniarch": 0.08622393012046814,
+   "copy_last": 0.19993141293525696,
+   "seconds": 0.7156729698181152
+  },
+  "burgers_nu0.4": {
+   "family": "burgers",
+   "dim": 1,
+   "n": 50,
+   "omniarch": 0.03430318459868431,
+   "copy_last": 0.08754635602235794,
+   "seconds": 0.7163450717926025
+  },
+  "burgers_nu1.0": {
+   "family": "burgers",
+   "dim": 1,
+   "n": 50,
+   "omniarch": 0.01390328910201788,
+   "copy_last": 0.0022369471844285727,
+   "seconds": 0.716057538986206
+  },
+  "burgers_nu2.0": {
+   "family": "burgers",
+   "dim": 1,
+   "n": 50,
+   "omniarch": 0.012513050809502602,
+   "copy_last": 0.0,
+   "seconds": 0.7158911228179932
+  },
+  "burgers_nu4.0": {
+   "family": "burgers",
+   "dim": 1,
+   "n": 50,
+   "omniarch": 0.012217543087899685,
+   "copy_last": 0.0,
+   "seconds": 0.715850830078125
+  },
+  "cfd1d_rand_eta0.01": {
+   "family": "cfd1d",
+   "dim": 1,
+   "n": 50,
+   "omniarch": 0.1056351512670517,
+   "copy_last": 0.48830750584602356,
+   "seconds": 0.2589399814605713
+  },
+  "cfd1d_rand_eta0.1": {
+   "family": "cfd1d",
+   "dim": 1,
+   "n": 50,
+   "omniarch": 0.05481454357504845,
+   "copy_last": 0.3573191463947296,
+   "seconds": 0.254838228225708
+  },
+  "cfd1d_rand_eta1e-8": {
+   "family": "cfd1d",
+   "dim": 1,
+   "n": 50,
+   "omniarch": 0.15138132870197296,
+   "copy_last": 0.520476758480072,
+   "seconds": 0.2550349235534668
+  },
+  "cfd1d_rand_trans": {
+   "family": "cfd1d",
+   "dim": 1,
+   "n": 50,
+   "omniarch": 0.3125939965248108,
+   "copy_last": 0.5929040312767029,
+   "seconds": 0.2550795078277588
+  },
+  "cfd1d_shock_trans": {
+   "family": "cfd1d",
+   "dim": 1,
+   "n": 50,
+   "omniarch": 0.06851808726787567,
+   "copy_last": 0.30395010113716125,
+   "seconds": 0.2547130584716797
+  },
+  "cfd2d_rand_m0.1_eta0.01": {
+   "family": "cfd2d",
+   "dim": 2,
+   "n": 100,
+   "omniarch": 0.11180216073989868,
+   "copy_last": 0.7153393030166626,
+   "seconds": 0.8395586013793945
+  },
+  "cfd2d_rand_m0.1_eta0.1": {
+   "family": "cfd2d",
+   "dim": 2,
+   "n": 100,
+   "omniarch": 0.15451517701148987,
+   "copy_last": 0.6373792886734009,
+   "seconds": 0.8506677150726318
+  },
+  "cfd2d_rand_m0.1_eta1e-8": {
+   "family": "cfd2d",
+   "dim": 2,
+   "n": 30,
+   "omniarch": 0.2858373522758484,
+   "copy_last": 0.5477149486541748,
+   "seconds": 0.3102755546569824
+  },
+  "cfd2d_rand_m1.0_eta0.01": {
+   "family": "cfd2d",
+   "dim": 2,
+   "n": 100,
+   "omniarch": 0.14803041517734528,
+   "copy_last": 0.671072244644165,
+   "seconds": 0.819164514541626
+  },
+  "cfd2d_rand_m1.0_eta0.1": {
+   "family": "cfd2d",
+   "dim": 2,
+   "n": 100,
+   "omniarch": 0.1925695240497589,
+   "copy_last": 0.5754743814468384,
+   "seconds": 0.8155086040496826
+  },
+  "cfd2d_rand_m1.0_eta1e-8": {
+   "family": "cfd2d",
+   "dim": 2,
+   "n": 30,
+   "omniarch": 0.3683273196220398,
+   "copy_last": 0.7150604724884033,
+   "seconds": 0.30678319931030273
+  },
+  "cfd2d_turb_m0.1": {
+   "family": "cfd2d",
+   "dim": 2,
+   "n": 30,
+   "omniarch": 0.25191065669059753,
+   "copy_last": 0.5338821411132812,
+   "seconds": 0.3081073760986328
+  },
+  "cfd2d_turb_m1.0": {
+   "family": "cfd2d",
+   "dim": 2,
+   "n": 30,
+   "omniarch": 0.37575292587280273,
+   "copy_last": 0.7880458235740662,
+   "seconds": 0.3264157772064209
+  },
+  "cfd3d_rand": {
+   "family": "cfd3d",
+   "dim": 3,
+   "n": 10,
+   "omniarch": 0.5072565674781799,
+   "copy_last": 0.9009124636650085,
+   "seconds": 0.7745814323425293
+  },
+  "cfd3d_turb": {
+   "family": "cfd3d",
+   "dim": 3,
+   "n": 30,
+   "omniarch": 0.5282717347145081,
+   "copy_last": 0.8704410791397095,
+   "seconds": 1.8185617923736572
+  },
+  "diffreact2d": {
+   "family": "diffreact2d",
+   "dim": 2,
+   "n": 100,
+   "omniarch": 0.14195199310779572,
+   "copy_last": 0.49552014470100403,
+   "seconds": 0.6876778602600098
+  },
+  "diffsorp": {
+   "family": "diffsorp",
+   "dim": 1,
+   "n": 100,
+   "omniarch": 0.039375338703393936,
+   "copy_last": 0.15688219666481018,
+   "seconds": 0.5165653228759766
+  },
+  "reacdiff_nu0.5_rho1.0": {
+   "family": "reacdiff",
+   "dim": 1,
+   "n": 25,
+   "omniarch": 0.0026888875290751457,
+   "copy_last": 0.0007416949956677854,
+   "seconds": 0.1281733512878418
+  },
+  "reacdiff_nu0.5_rho10.0": {
+   "family": "reacdiff",
+   "dim": 1,
+   "n": 25,
+   "omniarch": 0.002398438984528184,
+   "copy_last": 0.0,
+   "seconds": 0.1285557746887207
+  },
+  "reacdiff_nu0.5_rho2.0": {
+   "family": "reacdiff",
+   "dim": 1,
+   "n": 25,
+   "omniarch": 0.04469844326376915,
+   "copy_last": 0.045537639409303665,
+   "seconds": 0.12855148315429688
+  },
+  "reacdiff_nu0.5_rho5.0": {
+   "family": "reacdiff",
+   "dim": 1,
+   "n": 25,
+   "omniarch": 0.026385530829429626,
+   "copy_last": 0.02799140475690365,
+   "seconds": 0.12817835807800293
+  },
+  "reacdiff_nu1.0_rho1.0": {
+   "family": "reacdiff",
+   "dim": 1,
+   "n": 25,
+   "omniarch": 0.10438044369220734,
+   "copy_last": 0.1082243025302887,
+   "seconds": 0.12836551666259766
+  },
+  "reacdiff_nu1.0_rho10.0": {
+   "family": "reacdiff",
+   "dim": 1,
+   "n": 25,
+   "omniarch": 0.0038832088466733694,
+   "copy_last": 0.000985988648608327,
+   "seconds": 0.1289067268371582
+  },
+  "reacdiff_nu1.0_rho2.0": {
+   "family": "reacdiff",
+   "dim": 1,
+   "n": 25,
+   "omniarch": 0.1450769156217575,
+   "copy_last": 0.14628025889396667,
+   "seconds": 0.1294550895690918
+  },
+  "reacdiff_nu1.0_rho5.0": {
+   "family": "reacdiff",
+   "dim": 1,
+   "n": 25,
+   "omniarch": 0.06557591259479523,
+   "copy_last": 0.06658384948968887,
+   "seconds": 0.12958312034606934
+  },
+  "reacdiff_nu2.0_rho1.0": {
+   "family": "reacdiff",
+   "dim": 1,
+   "n": 25,
+   "omniarch": 0.002816822612658143,
+   "copy_last": 0.00016961467918008566,
+   "seconds": 0.12966275215148926
+  },
+  "reacdiff_nu2.0_rho10.0": {
+   "family": "reacdiff",
+   "dim": 1,
+   "n": 25,
+   "omniarch": 0.002322803484275937,
+   "copy_last": 0.0,
+   "seconds": 0.12935519218444824
+  },
+  "reacdiff_nu2.0_rho2.0": {
+   "family": "reacdiff",
+   "dim": 1,
+   "n": 25,
+   "omniarch": 0.04431262984871864,
+   "copy_last": 0.04454087093472481,
+   "seconds": 0.12952280044555664
+  },
+  "reacdiff_nu2.0_rho5.0": {
+   "family": "reacdiff",
+   "dim": 1,
+   "n": 25,
+   "omniarch": 0.02599247731268406,
+   "copy_last": 0.0266744252294302,
+   "seconds": 0.13022732734680176
+  },
+  "reacdiff_nu5.0_rho1.0": {
+   "family": "reacdiff",
+   "dim": 1,
+   "n": 25,
+   "omniarch": 0.02037261798977852,
+   "copy_last": 0.022743018344044685,
+   "seconds": 0.12979817390441895
+  },
+  "reacdiff_nu5.0_rho10.0": {
+   "family": "reacdiff",
+   "dim": 1,
+   "n": 25,
+   "omniarch": 0.0029733809642493725,
+   "copy_last": 0.00019605971465352923,
+   "seconds": 0.12964773178100586
+  },
+  "reacdiff_nu5.0_rho2.0": {
+   "family": "reacdiff",
+   "dim": 1,
+   "n": 25,
+   "omniarch": 0.14034678041934967,
+   "copy_last": 0.14144492149353027,
+   "seconds": 0.12973928451538086
+  },
+  "reacdiff_nu5.0_rho5.0": {
+   "family": "reacdiff",
+   "dim": 1,
+   "n": 25,
+   "omniarch": 0.04678919166326523,
+   "copy_last": 0.04670931398868561,
+   "seconds": 0.13066744804382324
+  },
+  "swe2d": {
+   "family": "swe2d",
+   "dim": 2,
+   "n": 100,
+   "omniarch": 0.0036335387267172337,
+   "copy_last": 0.11010821163654327,
+   "seconds": 0.5663294792175293
+  }
+ },
+ "per_family": {
+  "adv": {
+   "dim": 1,
+   "omniarch": 0.16962307039648294,
+   "copy_last": 1.0005283877253532,
+   "files": 8
+  },
+  "burgers": {
+   "dim": 1,
+   "omniarch": 0.1458122938250502,
+   "copy_last": 0.3353763166621017,
+   "files": 12
+  },
+  "cfd1d": {
+   "dim": 1,
+   "omniarch": 0.1385886214673519,
+   "copy_last": 0.45259150862693787,
+   "files": 5
+  },
+  "cfd2d": {
+   "dim": 2,
+   "omniarch": 0.23609319142997265,
+   "copy_last": 0.647996075451374,
+   "files": 8
+  },
+  "cfd3d": {
+   "dim": 3,
+   "omniarch": 0.517764151096344,
+   "copy_last": 0.885676771402359,
+   "files": 2
+  },
+  "diffreact2d": {
+   "dim": 2,
+   "omniarch": 0.14195199310779572,
+   "copy_last": 0.49552014470100403,
+   "files": 1
+  },
+  "diffsorp": {
+   "dim": 1,
+   "omniarch": 0.039375338703393936,
+   "copy_last": 0.15688219666481018,
+   "files": 1
+  },
+  "reacdiff": {
+   "dim": 1,
+   "omniarch": 0.042563405353575945,
+   "copy_last": 0.042426460194292304,
+   "files": 16
+  },
+  "swe2d": {
+   "dim": 2,
+   "omniarch": 0.0036335387267172337,
+   "copy_last": 0.11010821163654327,
+   "files": 1
+  }
+ },
+ "ckpt": "omniarch-base.pt"
+}
