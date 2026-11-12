@@ -61,13 +61,13 @@ The Python and HTTP interfaces and the input format are described in [docs/usage
 
 ## Checkpoints
 
-| Checkpoint | Parameters | Training | Mean nRMSE | Download (BUAA Pan, valid until 2027-10-22) |
+| Checkpoint | Parameters | Training | Mean nRMSE | Download (BUAA Pan, valid until 2027-11-12) |
 |---|---|---|---|---|
-| `omniarch-base.pt` (1.2 GB) | 308 M | 72k steps | 0.145 | https://bhpan.buaa.edu.cn/link/AA4C3D921A4EC6439B952F161E819F3938 |
-| `omniarch-mini.pt` (293 MB) | 77 M | 72k steps | 0.168 | https://bhpan.buaa.edu.cn/link/AA00790700453A44E893F3130C7DD2B618 |
-| `omniarch-tiny.pt` (54 MB) | 14 M | 108k steps | 0.212 | https://bhpan.buaa.edu.cn/link/AA5516D6EE8EF74748AD809475482F5340 |
+| `omniarch-base.pt` (1.2 GB) | 308 M | 72k steps | 0.145 | https://bhpan.buaa.edu.cn/link/AA800ECF93E7504AB994AD3CA03104A3BF |
+| `omniarch-mini.pt` (293 MB) | 77 M | 72k steps | 0.168 | https://bhpan.buaa.edu.cn/link/AA35CE17248C5741968A204AED077188EB |
+| `omniarch-tiny.pt` (54 MB) | 14 M | 108k steps | 0.212 | https://bhpan.buaa.edu.cn/link/AAC0974F1805A4444C84B9F57DA7337964 |
 
-Mean nRMSE follows the PDEBench protocol (ten given frames, autoregressive rollout to the end of each trajectory, mean over nine PDE families; lower is better). Copying the last given frame yields 0.459. The v0.2 `base` checkpoint (36k steps, 0.159) remains available at https://bhpan.buaa.edu.cn/link/AA645380522EB54391B3A496443C6CD709. Without `--ckpt`, the tool loads `weights/omniarch-base.pt`, then `-mini`, then `-tiny`. Per-family results and zero-shot cases are listed in [docs/results.md](docs/results.md).
+Mean nRMSE follows the PDEBench protocol (ten given frames, autoregressive rollout to the end of each trajectory, mean over nine PDE families; lower is better). Copying the last given frame yields 0.459. The v0.2 `base` checkpoint (36k steps, 0.159) remains available at https://bhpan.buaa.edu.cn/link/AA02E806E9921748FD98661A1B89E85E03. Without `--ckpt`, the tool loads `weights/omniarch-base.pt`, then `-mini`, then `-tiny`. Per-family results and zero-shot cases are listed in [docs/results.md](docs/results.md).
 
 ## Roadmap
 
