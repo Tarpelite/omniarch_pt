@@ -16,9 +16,11 @@ OmniArch-pt is a PyTorch implementation of OmniArch, a foundation model for scie
 
 <p align="center"><sub>Test trajectories from PDEBench: ten given frames, then eleven forecast steps by the same <code>base</code> checkpoint (v0.4). Top: ground truth; bottom: OmniArch.</sub></p>
 
-> **Preview release (v0.4).** The released checkpoints were trained from scratch on a subsampled version of PDEBench. They are intended for deployment and demonstration and do not reproduce the model or the results of the original paper. New results and checkpoints are published regularly.
+> **v0.5: paper reproduction.** `omniarch-large-pt.pt` is OmniArch-L of the ICML 2025 paper, re-trained from scratch with this code; one command evaluates it on Table 1 ([details](docs/paper.md)). The `base`, `mini` and `tiny` checkpoints are smaller models trained on a subsampled version of PDEBench for deployment and demonstration.
 
 ## News
+
+- **2026-11-22, v0.5.** Reproduction of Table 1 of the ICML 2025 paper: OmniArch-L (640 M parameters) re-trained from scratch in PyTorch, weights on Google Drive, evaluation with one command. The error is at or below the paper on 7 of the 10 evaluated columns (8 with the metric of the original validation code) ([details](docs/paper.md)).
 
 - **2026-10-22, v0.4.** New `base` checkpoint trained for twice as many steps (72k): mean nRMSE 0.145, against 0.159 for v0.2 ([results](docs/results.md)).
 - **2026-10-22, v0.3.** Studies of joint training across spatial dimensions and of robustness to the frame spacing; faster training ([studies](docs/studies.md), [training](docs/training.md#training-speed)).
@@ -69,12 +71,43 @@ The Python and HTTP interfaces and the input format are described in [docs/usage
 
 Mean nRMSE follows the PDEBench protocol (ten given frames, autoregressive rollout to the end of each trajectory, mean over nine PDE families; lower is better). Copying the last given frame yields 0.459. The v0.2 `base` checkpoint (36k steps, 0.159) remains available at https://bhpan.buaa.edu.cn/link/AA02E806E9921748FD98661A1B89E85E03. Without `--ckpt`, the tool loads `weights/omniarch-base.pt`, then `-mini`, then `-tiny`. Per-family results and zero-shot cases are listed in [docs/results.md](docs/results.md).
 
+### OmniArch-L (paper reproduction)
+
+| Checkpoint | Parameters | Training | Download (Google Drive) |
+|---|---|---|---|
+| `omniarch-large-pt.pt` (2.6 GB) | 640 M | 45k steps, PDEBench and Maxwell-3D | https://drive.google.com/file/d/1NJkxgkW8OzK4pCfjCFkos6SyRlnZhkI-/view |
+| `omniarch-large-pt-maxwell.pt` (2.6 GB) | 640 M | above, then 10k steps on Maxwell-3D | https://drive.google.com/file/d/1O9Mw74cCRtCRcTwglpkod8Q44L45whUY/view |
+
+```bash
+python scripts/reproduce_paper.py --pdebench /path/to/PDEBench /path/to/maxwell --ckpt weights/omniarch-large-pt.pt
+```
+
+| PDE | OmniArch-L (this release) | Recovered | Paper (Table 1) | Copy last frame |
+|---|---|---|---|---|
+| 1D CFD | 0.0347 | 0.0306 | 0.0250 | 0.0729 |
+| 1D Advection | 0.0145 | 0.0145 | 0.0182 | 0.2424 |
+| 1D Burgers | 0.0031 | 0.0030 | 0.0063 | 0.0055 |
+| 1D Diffusion-sorption | 0.0013 | 0.0004 | 0.0015 | 0.0032 |
+| 1D Reaction-diffusion | 0.0001 | 0.0000 | 0.0004 | 0.0001 |
+| 2D CFD ¹ | 0.0055 | 0.0047 | 0.0148 | 0.0598 |
+| 2D Reaction-diffusion | 0.0060 | 0.0029 | 0.0105 | 0.0132 |
+| 2D Shallow water | 0.0042 | 0.0004 | 0.0014 | 0.0060 |
+| 3D CFD | 0.4329 | 0.3666 | 0.4531 | 0.4642 |
+| 3D Maxwell | 0.4564 | 0.4552 | 0.2268 | 1.4089 |
+| 3D Maxwell, fine-tuned ² | 0.2971 | 0.2963 | 0.2268 | 1.4089 |
+
+¹ The single 2D CFD file used in Table 1, `Rand_M1.0_Eta0.1_Zeta0.1_128`; the mean over all eight 2D CFD files is 0.1324.  
+² `omniarch-large-pt-maxwell.pt`: the released checkpoint fine-tuned for 10k steps on Maxwell only, as the original code fine-tuned per data set; the other columns use the pre-trained checkpoint.
+
+nRMSE of the next-frame prediction on the in-domain test split (lower is better); *recovered* applies the per-file map of the original validation code before computing the error. Data, protocol and training recipe: [docs/paper.md](docs/paper.md).
+
 ## Roadmap
 
 - [x] PyTorch implementation, command-line tool, web demonstration and HTTP interface (v0.1)
 - [x] `base`, `mini` and `tiny` checkpoints; scaling study (v0.2)
 - [x] Studies of joint training across dimensions and of frame-spacing robustness; faster training (v0.3)
 - [x] `base` trained for 72k steps (v0.4)
+- [x] OmniArch-L re-trained in PyTorch; reproduction of Table 1 of the paper (v0.5)
 - [ ] Robustness to the frame spacing in the `base` checkpoint
 - [ ] Larger checkpoints, towards approximately one billion parameters
 - [ ] Training data beyond PDEBench
@@ -85,6 +118,7 @@ Mean nRMSE follows the PDEBench protocol (ten given frames, autoregressive rollo
 ## Documentation
 
 - [Usage](docs/usage.md): interfaces, input format and the number of given frames
+- [Paper reproduction](docs/paper.md): OmniArch-L on Table 1 of the ICML 2025 paper, data, protocol and training recipe
 - [Results](docs/results.md): per-family benchmark results and zero-shot cases
 - [Studies](docs/studies.md): scaling, joint training across dimensions and frame spacing
 - [Training](docs/training.md): data preparation, training and training speed
