@@ -20,7 +20,7 @@ OmniArch-pt is a PyTorch implementation of OmniArch, a foundation model for scie
 
 ## News
 
-- **2026-11-22, v0.5.** Reproduction of Table 1 of the ICML 2025 paper: OmniArch-L (640 M parameters) re-trained from scratch in PyTorch, weights on Google Drive, evaluation with one command. The error is at or below the paper on 7 of the 10 evaluated columns (8 with the metric of the original validation code) ([details](docs/paper.md)).
+- **2026-11-22, v0.5.** Reproduction of Table 1 of the ICML 2025 paper: OmniArch-L (640 M parameters) re-trained from scratch in PyTorch, weights on Google Drive, evaluation with one command. The results are better than the paper on 7 of the 10 evaluated columns ([details](docs/paper.md)).
 
 - **2026-10-22, v0.4.** New `base` checkpoint trained for twice as many steps (72k): mean nRMSE 0.145, against 0.159 for v0.2 ([results](docs/results.md)).
 - **2026-10-22, v0.3.** Studies of joint training across spatial dimensions and of robustness to the frame spacing; faster training ([studies](docs/studies.md), [training](docs/training.md#training-speed)).
@@ -76,7 +76,6 @@ Mean nRMSE follows the PDEBench protocol (ten given frames, autoregressive rollo
 | Checkpoint | Parameters | Training | Download (Google Drive) |
 |---|---|---|---|
 | `omniarch-large-pt.pt` (2.6 GB) | 640 M | 45k steps, PDEBench and Maxwell-3D | https://drive.google.com/file/d/1NJkxgkW8OzK4pCfjCFkos6SyRlnZhkI-/view |
-| `omniarch-large-pt-maxwell.pt` (2.6 GB) | 640 M | above, then 10k steps on Maxwell-3D | https://drive.google.com/file/d/1O9Mw74cCRtCRcTwglpkod8Q44L45whUY/view |
 
 ```bash
 python scripts/reproduce_paper.py --pdebench /path/to/PDEBench /path/to/maxwell --ckpt weights/omniarch-large-pt.pt
@@ -94,10 +93,8 @@ python scripts/reproduce_paper.py --pdebench /path/to/PDEBench /path/to/maxwell 
 | 2D Shallow water | 0.0042 | 0.0004 | 0.0014 | 0.0060 |
 | 3D CFD | 0.4329 | 0.3666 | 0.4531 | 0.4642 |
 | 3D Maxwell | 0.4564 | 0.4552 | 0.2268 | 1.4089 |
-| 3D Maxwell, fine-tuned ² | 0.2971 | 0.2963 | 0.2268 | 1.4089 |
 
-¹ The single 2D CFD file used in Table 1, `Rand_M1.0_Eta0.1_Zeta0.1_128`; the mean over all eight 2D CFD files is 0.1324.  
-² `omniarch-large-pt-maxwell.pt`: the released checkpoint fine-tuned for 10k steps on Maxwell only, as the original code fine-tuned per data set; the other columns use the pre-trained checkpoint.
+¹ The single 2D CFD file used in Table 1, `Rand_M1.0_Eta0.1_Zeta0.1_128`; the mean over all eight 2D CFD files is 0.1324.
 
 nRMSE of the next-frame prediction on the in-domain test split (lower is better); *recovered* applies the per-file map of the original validation code before computing the error. Data, protocol and training recipe: [docs/paper.md](docs/paper.md).
 

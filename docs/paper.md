@@ -21,14 +21,12 @@ python scripts/reproduce_paper.py --pdebench /path/to/PDEBench /path/to/maxwell 
 | 2D Shallow water | 0.0042 | 0.0004 | 0.0014 | 0.0060 |
 | 3D CFD | 0.4329 | 0.3666 | 0.4531 | 0.4642 |
 | 3D Maxwell | 0.4564 | 0.4552 | 0.2268 | 1.4089 |
-| 3D Maxwell, fine-tuned ² | 0.2971 | 0.2963 | 0.2268 | 1.4089 |
 
-¹ The single 2D CFD file used in Table 1, `Rand_M1.0_Eta0.1_Zeta0.1_128`; the mean over all eight 2D CFD files is 0.1324.  
-² `omniarch-large-pt-maxwell.pt`: the released checkpoint fine-tuned for 10k steps on Maxwell only, as the original code fine-tuned per data set; the other columns use the pre-trained checkpoint.
+¹ The single 2D CFD file used in Table 1, `Rand_M1.0_Eta0.1_Zeta0.1_128`; the mean over all eight 2D CFD files is 0.1324.
 
 nRMSE of the next-frame prediction on the in-domain test split (lower is better). *Recovered* is the same error after the per-file affine map `x*std+mean` that the original validation code applied to prediction and target before computing the error; the paper does not state which of the two it reports. Over all eight 2D CFD files, copying the last frame gives 0.3070 (model: 0.1324). 2D incompressible Navier-Stokes (2.3 TB) is not evaluated.
 
-3D Maxwell: the pre-trained checkpoint gives 0.4564. Fine-tuning it for 10k steps on Maxwell alone, as the original code did per data set (`configs/finetuning`), gives 0.2971 (`omniarch-large-pt-maxwell.pt`, https://drive.google.com/file/d/1O9Mw74cCRtCRcTwglpkod8Q44L45whUY/view). The Maxwell test set is the 10 % split of all PDEArena files concatenated in sorted order.
+3D Maxwell: the test set is the 10 % split of all PDEArena files concatenated in sorted order.
 
 ## Evaluation protocol
 
@@ -64,8 +62,8 @@ The recipe of the released checkpoint:
 | Batch | 42 / 3 / 1 trajectories per GPU for 1D / 2D / 3D, one step per dimension, 4 GPUs |
 | Optimiser | AdamW, learning rate 1e-4 with 500 warm-up steps and cosine decay to 1e-6, gradient clipping 0.5, input noise 1e-4 |
 | Sampling | PDE families drawn in proportion to the square root of their number of trajectories; 3D frame spacing drawn from 1 to 4 |
-| Schedule | 5k steps with uniform sampling, then 40k steps with the recipe above; Maxwell joined after the first 5k steps of the 40k-step run; the Maxwell checkpoint is then fine-tuned for 10k steps on Maxwell alone (`--only "3D Maxwell" --batch 42 3 2`) |
-| Compute | 4 × RTX 5090 (32 GB): about 13 hours for pre-training and 1.5 hours for the Maxwell fine-tuning |
+| Schedule | 5k steps with uniform sampling, then 40k steps with the recipe above; Maxwell joined after the first 5k steps of the 40k-step run |
+| Compute | 4 × RTX 5090 (32 GB): about 13 hours |
 
 ## Loading the model in Python
 
